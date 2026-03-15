@@ -18,7 +18,7 @@ class DashboardController extends Controller
     $role = $user->role;
 
     if ($role == 'admin' || $role == 'staff') {
-        return view('dashboard.admin_guru', [
+        return view('dashboard.admin_staff', [
             'total_siswa'    => \App\Models\User::where('role', 'student')->count(),
             'daftar_murid'   => \App\Models\User::where('role', 'student')->with('progress')->get(),
             'siswa_beresiko' => \App\Models\StudentProgress::where('is_at_risk', true)->with('user')->take(5)->get(),
@@ -32,7 +32,7 @@ class DashboardController extends Controller
 
         // LOGIC UNTUK STUDENT (MURID)
         if ($role == 'student') {
-            return view('dashboard.murid', [
+            return view('dashboard.student', [
                 'my_courses'  => Course::all(),
                 'my_progress' => StudentProgress::where('user_id', $user->id)->first(),
                 'activities'  => ActivityLog::where('user_id', $user->id)->latest()->take(5)->get()
