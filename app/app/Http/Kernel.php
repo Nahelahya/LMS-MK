@@ -16,7 +16,6 @@ class Kernel extends HttpKernel
     ];
 
     protected $middlewareGroups = [
-
         'web' => [
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -24,14 +23,16 @@ class Kernel extends HttpKernel
             \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
-
         'api' => [
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
 
+    // ─── ROUTE MIDDLEWARE ─────────────────────────────────────────────────────
+    // Add 'checkstatus' here so it can be used in routes/web.php
     protected $routeMiddleware = [
-        'auth' => \App\Http\Middleware\Authenticate::class,
-        'role' => \App\Http\Middleware\RoleMiddleware::class,
+        'auth'        => \App\Http\Middleware\Authenticate::class,
+        'role'        => \App\Http\Middleware\RoleMiddleware::class,
+        'checkstatus' => \App\Http\Middleware\CheckStatus::class,
     ];
 }
