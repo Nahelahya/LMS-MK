@@ -11,7 +11,7 @@
             <i class="fas fa-arrow-left text-xs"></i> Kembali
         </a>
         <h2 class="text-2xl font-black text-[#1B254B]">Buat Kelas Baru</h2>
-        <p class="text-sm text-gray-400 mt-1">Kode kelas akan digenerate otomatis</p>
+        <p class="text-sm text-gray-400 mt-1">Kode kelas akan digenerate otomatis dan dapat diubah saat kode sudah dibuat.</p>
     </div>
 
     <div class="bg-white rounded-2xl p-6 shadow-sm">

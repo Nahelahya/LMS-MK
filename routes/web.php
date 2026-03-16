@@ -78,3 +78,8 @@ Route::post('reset-password',        [ForgotPasswordController::class, 'resetPas
 // ─── GOOGLE OAUTH ─────────────────────────────────────────────────────────────
 Route::get('/auth/google/redirect', [SocialiteController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [SocialiteController::class, 'callback']);
+//  Kode UNIK KELAS
+Route::patch('/kelas/{kelas}/kode', [KelasController::class, 'updateKode'])
+    ->name('kelas.updateKode')
+    ->middleware(['auth']);
+ 

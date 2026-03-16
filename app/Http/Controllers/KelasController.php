@@ -6,6 +6,7 @@ use App\Models\Kelas;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class KelasController extends Controller
 {
@@ -53,7 +54,6 @@ class KelasController extends Controller
     // STAFF: Detail kelas (lihat siswa & materi)
     public function show(Kelas $kelas)
     {
-        // Pastikan hanya staff pemilik yang bisa lihat
         abort_if($kelas->staff_id !== auth()->id(), 403);
 
         $kelas->load(['siswa', 'courses']);
@@ -72,11 +72,40 @@ class KelasController extends Controller
     }
 
     // ───────────────────────────────────────────
+    // STAFF: Update kode unik kelas
+    // PATCH /kelas/{kelas}/kode
+    // ───────────────────────────────────────────
+    public function updateKode(Request $request, Kelas $kelas)
+    {
+        abort_if($kelas->staff_id !== auth()->id(), 403);
+
+        $request->validate([
+            'kode_kelas' => [
+                'required',
+                'string',
+                'max:10',
+                'regex:/^[A-Z0-9]+$/',
+                Rule::unique('kelas', 'kode_kelas')->ignore($kelas->id),
+            ],
+        ], [
+            'kode_kelas.required' => 'Kode kelas tidak boleh kosong.',
+            'kode_kelas.max'      => 'Kode maksimal 10 karakter.',
+            'kode_kelas.regex'    => 'Kode hanya boleh huruf besar dan angka.',
+            'kode_kelas.unique'   => 'Kode ini sudah dipakai kelas lain. Pilih kode lain.',
+        ]);
+
+        $kelas->update(['kode_kelas' => $request->kode_kelas]);
+
+        return back()->with('success', "Kode kelas berhasil diubah menjadi {$request->kode_kelas}.");
+    }
+
+    // ───────────────────────────────────────────
     // SISWA: Halaman join kelas (form input kode)
     // ───────────────────────────────────────────
     public function joinForm()
     {
         $myKelas = auth()->user()->kelas()->with('staff')->latest()->get();
+
         return view('kelas.siswa.join', compact('myKelas'));
     }
 
@@ -84,7 +113,8 @@ class KelasController extends Controller
     public function join(Request $request)
     {
         $request->validate([
-            'kode_kelas' => 'required|string|size:6',
+            // ✅ max:10 agar sesuai dengan kode yang sudah bisa diedit (bukan size:6)
+            'kode_kelas' => 'required|string|max:10',
         ]);
 
         $kelas = Kelas::where('kode_kelas', strtoupper($request->kode_kelas))->first();
@@ -95,7 +125,6 @@ class KelasController extends Controller
 
         $user = auth()->user();
 
-        // Cek sudah join belum
         if ($user->kelas()->where('kelas_id', $kelas->id)->exists()) {
             return back()->withErrors(['kode_kelas' => 'Kamu sudah terdaftar di kelas ini.']);
         }
