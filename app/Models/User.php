@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Kelas;
 
 class User extends Authenticatable
 {
@@ -58,4 +59,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function kelasDimiliki()
+{
+    return $this->hasMany(Kelas::class, 'staff_id');
+}
+
+// Relasi: kelas yang DIIKUTI siswa (sebagai peserta)
+public function kelas()
+{
+    return $this->belongsToMany(Kelas::class, 'kelas_siswa', 'user_id', 'kelas_id')
+        ->withTimestamps();
+}
 }

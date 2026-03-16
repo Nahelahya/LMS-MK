@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
+
 <body class="bg-[#F4F7FE] font-sans" x-data="{ sidebarOpen: false }">
 
 <div class="flex min-h-screen overflow-hidden">
@@ -43,12 +44,28 @@
                 <span class="font-semibold text-sm">Materi</span>
             </a>
 
+@if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin')
+<a href="{{ route('kelas.index') }}"
+   class="flex items-center space-x-4 p-4 rounded-2xl {{ request()->is('kelas*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800' }} transition">
+    <i class="fas fa-chalkboard-teacher text-lg {{ request()->is('kelas*') ? 'text-white' : 'text-gray-400' }}"></i>
+    <span class="font-semibold text-sm">Kelas</span>
+</a>
+@endif
+
             {{-- Progres: always visible --}}
             <a href="/progres"
                class="flex items-center space-x-4 p-4 rounded-2xl {{ request()->is('progres*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800' }} transition">
                 <i class="fas fa-chart-line text-lg {{ request()->is('progres*') ? 'text-white' : 'text-gray-400' }}"></i>
                 <span class="font-semibold text-sm">Progres</span>
             </a>
+
+@if(auth()->user()->role === 'student')
+<a href="{{ route('kelas.join') }}"
+   class="flex items-center space-x-4 p-4 rounded-2xl {{ request()->is('join-kelas*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800' }} transition">
+    <i class="fas fa-chalkboard text-lg {{ request()->is('join-kelas*') ? 'text-white' : 'text-gray-400' }}"></i>
+    <span class="font-semibold text-sm">Kelas Saya</span>
+</a>
+@endif
 
             {{-- Admin & Staff only --}}
             @if(auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
@@ -129,6 +146,22 @@
         </main>
     </div>
 </div>
+{{-- Untuk staff/admin --}}
+@if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin')
+<a href="{{ route('kelas.index') }}"
+   class="flex items-center space-x-4 p-4 rounded-2xl {{ request()->is('kelas*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800' }} transition">
+    <i class="fas fa-chalkboard-teacher text-lg"></i>
+    <span class="font-semibold text-sm">Kelas</span>
+</a>
+@endif
 
+{{-- Untuk siswa --}}
+@if(auth()->user()->role === 'student')
+<a href="{{ route('kelas.join') }}"
+   class="flex items-center space-x-4 p-4 rounded-2xl {{ request()->is('join-kelas*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800' }} transition">
+    <i class="fas fa-chalkboard text-lg"></i>
+    <span class="font-semibold text-sm">Kelas Saya</span>
+</a>
+@endif
 </body>
 </html>

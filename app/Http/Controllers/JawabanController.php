@@ -2,24 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Jawaban;
 use Illuminate\Http\Request;
-use App\Models\JawabanMurid;
 
 class JawabanController extends Controller
 {
-
     public function store(Request $request)
     {
+        // Only students submit answers
+        abort_unless(auth()->user()->role === 'student', 403);
 
-        $file = $request->file('file')->store('tugas','public');
-
-        JawabanMurid::create([
-            'file_path' => $file,
-            'user_id' => auth()->id()
+        $request->validate([
+            'materi_id' => 'required|exists:materi,id',
+            'file'      => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:20480',
         ]);
 
-        return back()->with('success','Tugas berhasil diupload');
+        $path = $request->file('file')->store('tugas', 'local');
 
+        Jawaban::create([
+            'materi_id' => $request->materi_id,
+            'student_id'=> auth()->id(),
+            'file_path' => $path,
+        ]);
+
+        return back()->with('success', 'Tugas berhasil dikumpulkan.');
     }
-
 }
