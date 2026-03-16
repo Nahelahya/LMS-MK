@@ -44,10 +44,6 @@ Route::middleware(['auth', 'checkstatus'])->group(function () {
         Route::post('/materi/upload',              [MateriController::class, 'store'])->name('materi.upload');
         Route::get('/materi/{materi}/edit',        [MateriController::class, 'edit'])->name('materi.edit');
         Route::put('/materi/{materi}',             [MateriController::class, 'update'])->name('materi.update');
-    });
-
-    // Delete: admin only
-    Route::middleware('role:admin')->group(function () {
         Route::delete('/materi/{materi}',          [MateriController::class, 'destroy'])->name('materi.destroy');
     });
 

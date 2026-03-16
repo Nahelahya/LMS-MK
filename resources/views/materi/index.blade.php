@@ -110,7 +110,7 @@
                             <div class="flex items-center justify-end space-x-2">
 
                                 {{-- DOWNLOAD (all authenticated users) --}}
-                                <a href="{{ route('materi.download', $m) }}"
+                                <a href="{{ route('materi.download', $m->id) }}"
                                    class="inline-flex items-center space-x-1 bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
                                     <i class="fas fa-download text-xs"></i>
                                     <span>Unduh</span>
@@ -118,16 +118,16 @@
 
                                 {{-- EDIT (admin & staff only) --}}
                                 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
-                                <a href="{{ route('materi.edit', $m) }}"
+                                <a href="{{ route('materi.edit', $m->id) }}"
                                    class="inline-flex items-center space-x-1 bg-yellow-50 text-yellow-600 hover:bg-yellow-100 px-3 py-1.5 rounded-lg text-xs font-semibold transition">
                                     <i class="fas fa-pencil-alt text-xs"></i>
                                     <span>Edit</span>
                                 </a>
                                 @endif
 
-                                {{-- DELETE (admin only) --}}
-                                @if(auth()->user()->role === 'admin')
-                                <form method="POST" action="{{ route('materi.destroy', $m) }}"
+                                {{-- DELETE --}}
+                                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
+                                <form method="POST" action="{{ route('materi.destroy', $m->id) }}"
                                       onsubmit="return confirm('Yakin ingin menghapus materi ini?')">
                                     @csrf
                                     @method('DELETE')

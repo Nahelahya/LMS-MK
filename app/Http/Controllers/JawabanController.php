@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\JawabanMurid;
 
-public function store(Request $request)
+class JawabanController extends Controller
 {
-    $file = $request->file('file')->store('tugas','public');
 
-    JawabanMurid::create([
-        'materi_id'=>$request->materi_id,
-        'user_id'=>auth()->id(),
-        'file_jawaban'=>$file
-    ]);
+    public function store(Request $request)
+    {
 
-    return back();
+        $file = $request->file('file')->store('tugas','public');
+
+        JawabanMurid::create([
+            'file_path' => $file,
+            'user_id' => auth()->id()
+        ]);
+
+        return back()->with('success','Tugas berhasil diupload');
+
+    }
+
 }

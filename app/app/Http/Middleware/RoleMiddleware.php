@@ -9,13 +9,12 @@ class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        // Guard: if not logged in, let auth middleware handle it
         if (!auth()->check()) {
-            return redirect()->route('login');
+            abort(403);
         }
 
         if (!in_array(auth()->user()->role, $roles)) {
-            abort(403, 'Akses ditolak. Role kamu tidak diizinkan.');
+            abort(403);
         }
 
         return $next($request);
