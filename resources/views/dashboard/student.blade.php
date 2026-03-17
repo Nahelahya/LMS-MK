@@ -61,10 +61,8 @@
             <div class="space-y-5">
             @forelse($my_courses as $course)
             @php
-                $progress = \App\Models\StudentProgress::where('user_id', auth()->id())
-                    ->where('course_id', $course->id)
-                    ->first();
-
+                // ✅ Gunakan my_progress yang sudah di-eager load dari controller (tidak N+1)
+                $progress = $course->my_progress;
                 $pct = $progress->completion_percentage ?? 0;
 
                 $barClass = match(true) {

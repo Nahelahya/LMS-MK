@@ -3,34 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use App\Models\Materi;
+use App\Models\Jawaban;
+use App\Models\StudentProgress;
 use App\Models\Course;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class KelasController extends Controller
 {
-    // ───────────────────────────────────────────
-    // STAFF: Lihat semua kelas milik sendiri
-    // ───────────────────────────────────────────
+    // ══════════════════════════════════════════════
+    // STAFF — KELAS CRUD
+    // ══════════════════════════════════════════════
+
     public function index()
     {
         $kelas = Kelas::where('staff_id', auth()->id())
             ->withCount('siswa')
-            ->with('courses')
-            ->latest()
-            ->get();
+            ->with(['courses', 'materis'])
+            ->latest()->get();
 
         return view('kelas.staff.index', compact('kelas'));
     }
 
-    // STAFF: Form buat kelas baru
     public function create()
     {
         return view('kelas.staff.create');
     }
 
-    // STAFF: Simpan kelas baru
     public function store(Request $request)
     {
         $request->validate([
@@ -44,78 +45,208 @@ class KelasController extends Controller
             'nama_kelas'     => $request->nama_kelas,
             'mata_pelajaran' => $request->mata_pelajaran,
             'deskripsi'      => $request->deskripsi,
-            // kode_kelas di-generate otomatis di Model boot()
         ]);
 
-        return redirect()->route('kelas.index')
-            ->with('success', 'Kelas berhasil dibuat!');
+        return redirect()->route('kelas.index')->with('success', 'Kelas berhasil dibuat!');
     }
 
-    // STAFF: Detail kelas (lihat siswa & materi)
     public function show(Kelas $kelas)
     {
         abort_if($kelas->staff_id !== auth()->id(), 403);
 
-        $kelas->load(['siswa', 'courses']);
+        $kelas->load([
+            'siswa',
+            'materis'  => fn($q) => $q->latest(),
+            'courses',
+        ]);
 
         return view('kelas.staff.show', compact('kelas'));
     }
 
-    // STAFF: Hapus kelas
     public function destroy(Kelas $kelas)
     {
         abort_if($kelas->staff_id !== auth()->id(), 403);
         $kelas->delete();
 
-        return redirect()->route('kelas.index')
-            ->with('success', 'Kelas berhasil dihapus.');
+        return redirect()->route('kelas.index')->with('success', 'Kelas berhasil dihapus.');
     }
 
-    // ───────────────────────────────────────────
-    // STAFF: Update kode unik kelas
-    // PATCH /kelas/{kelas}/kode
-    // ───────────────────────────────────────────
     public function updateKode(Request $request, Kelas $kelas)
     {
         abort_if($kelas->staff_id !== auth()->id(), 403);
 
         $request->validate([
             'kode_kelas' => [
-                'required',
-                'string',
-                'max:10',
-                'regex:/^[A-Z0-9]+$/',
+                'required', 'string', 'max:10', 'regex:/^[A-Z0-9]+$/',
                 Rule::unique('kelas', 'kode_kelas')->ignore($kelas->id),
             ],
         ], [
-            'kode_kelas.required' => 'Kode kelas tidak boleh kosong.',
+            'kode_kelas.required' => 'Kode tidak boleh kosong.',
             'kode_kelas.max'      => 'Kode maksimal 10 karakter.',
-            'kode_kelas.regex'    => 'Kode hanya boleh huruf besar dan angka.',
-            'kode_kelas.unique'   => 'Kode ini sudah dipakai kelas lain. Pilih kode lain.',
+            'kode_kelas.regex'    => 'Hanya huruf besar dan angka.',
+            'kode_kelas.unique'   => 'Kode sudah dipakai kelas lain.',
         ]);
 
         $kelas->update(['kode_kelas' => $request->kode_kelas]);
 
-        return back()->with('success', "Kode kelas berhasil diubah menjadi {$request->kode_kelas}.");
+        return back()->with('success', "Kode diubah menjadi {$request->kode_kelas}.");
     }
 
-    // ───────────────────────────────────────────
-    // SISWA: Halaman join kelas (form input kode)
-    // ───────────────────────────────────────────
+    // ══════════════════════════════════════════════
+    // STAFF — MATERI
+    // materi.id = UUID, kelas_id = bigint
+    // ══════════════════════════════════════════════
+
+    public function materiStore(Request $request, Kelas $kelas)
+    {
+        abort_if($kelas->staff_id !== auth()->id(), 403);
+
+        $request->validate([
+            'judul'          => 'required|string|max:255',
+            'deskripsi'      => 'nullable|string',
+            'deadline'       => 'nullable|date|after_or_equal:today',
+            'kunci_jawaban'  => 'nullable|string',
+            'file'           => 'required|file|mimes:pdf,doc,docx,xls,xlsx,mp4,jpg,jpeg,png|max:51200',
+        ], [
+            'deadline.after_or_equal' => 'Tenggat tidak boleh sebelum hari ini.',
+        ]);
+
+        $file = $request->file('file');
+        $path = $file->storeAs(
+            "materi/kelas_{$kelas->id}",
+            time() . '_' . $file->getClientOriginalName(),
+            'local'
+        );
+
+        // UUID di-generate otomatis di Model boot()
+        Materi::create([
+            'kelas_id'       => $kelas->id,
+            'judul'          => $request->judul,
+            'deskripsi'      => $request->deskripsi,
+            'deadline'       => $request->deadline ?: null,
+            'kunci_jawaban'  => $request->kunci_jawaban ?: null,
+            'file_path'      => $path,
+            'original_name'  => $file->getClientOriginalName(),
+            'tipe_file'      => strtolower($file->getClientOriginalExtension()),
+            'uploaded_by'    => auth()->id(),
+        ]);
+
+        return back()->with('success', 'Materi berhasil diupload.');
+    }
+
+    public function materiDownload(Kelas $kelas, Materi $materi)
+    {
+        if (auth()->user()->role === 'student') {
+            abort_unless(
+                auth()->user()->kelas()->where('kelas_id', $kelas->id)->exists(), 403
+            );
+        } else {
+            abort_if($kelas->staff_id !== auth()->id(), 403);
+        }
+
+        $path = storage_path('app/' . $materi->file_path);
+        abort_unless(file_exists($path), 404);
+
+        return response()->download($path, $materi->original_name);
+    }
+
+    public function materiDestroy(Kelas $kelas, Materi $materi)
+    {
+        abort_if($kelas->staff_id !== auth()->id(), 403);
+
+        Storage::disk('local')->delete($materi->file_path);
+        $materi->delete();
+
+        return back()->with('success', 'Materi berhasil dihapus.');
+    }
+
+    // STAFF: Update tenggat waktu saja (tanpa ganti file)
+    public function materiUpdateDeadline(Request $request, Kelas $kelas, Materi $materi)
+    {
+        abort_if($kelas->staff_id !== auth()->id(), 403);
+
+        $request->validate([
+            'deadline' => 'nullable|date|after_or_equal:today',
+        ], [
+            'deadline.after_or_equal' => 'Tenggat tidak boleh sebelum hari ini.',
+        ]);
+
+        $materi->update([
+            'deadline' => $request->deadline ?: null,
+        ]);
+
+        return back()->with('success', 'Tenggat waktu berhasil diperbarui.');
+    }
+
+    // ══════════════════════════════════════════════
+    // STAFF — PENILAIAN
+    // ══════════════════════════════════════════════
+
+    public function nilaiStore(Request $request, Kelas $kelas, $siswaId)
+    {
+        abort_if($kelas->staff_id !== auth()->id(), 403);
+
+        $request->validate([
+            'course_id' => 'required|exists:courses,id',
+            'nilai'     => 'required|numeric|min:0|max:100',
+        ]);
+
+        $nilai    = (float) $request->nilai;
+        $progress = StudentProgress::firstOrCreate(
+            ['user_id' => $siswaId, 'course_id' => $request->course_id],
+            ['completion_percentage' => 0, 'is_at_risk' => false]
+        );
+
+        // ENUM: Remedial | Normal | Advance
+        $progress->update([
+            'last_score'     => $nilai,
+            'is_at_risk'     => $nilai < 60,
+            'status_adaptif' => match(true) {
+                $nilai >= 75 => 'Advance',
+                $nilai >= 60 => 'Normal',
+                default      => 'Remedial',
+            },
+        ]);
+
+        return back()->with('success', 'Nilai berhasil disimpan.');
+    }
+
+    // ══════════════════════════════════════════════
+    // STAFF — DOWNLOAD JAWABAN
+    // jawabans.materi_id = uuid, student_id = bigint
+    // ══════════════════════════════════════════════
+
+    public function jawabanDownload(Kelas $kelas, Jawaban $jawaban)
+    {
+        abort_if($kelas->staff_id !== auth()->id(), 403);
+
+        // Pastikan jawaban ini untuk materi di kelas ini
+        $materi = Materi::where('id', $jawaban->materi_id)
+                        ->where('kelas_id', $kelas->id)
+                        ->firstOrFail();
+
+        $path = storage_path('app/' . $jawaban->file_path);
+        abort_unless(file_exists($path), 404);
+
+        $ext      = pathinfo($jawaban->file_path, PATHINFO_EXTENSION);
+        $filename = ($jawaban->student->name ?? 'siswa') . '_' . $materi->judul . '.' . $ext;
+
+        return response()->download($path, $filename);
+    }
+
+    // ══════════════════════════════════════════════
+    // SISWA — JOIN / SHOW / LEAVE
+    // ══════════════════════════════════════════════
+
     public function joinForm()
     {
         $myKelas = auth()->user()->kelas()->with('staff')->latest()->get();
-
         return view('kelas.siswa.join', compact('myKelas'));
     }
 
-    // SISWA: Proses join kelas pakai kode
     public function join(Request $request)
     {
-        $request->validate([
-            // ✅ max:10 agar sesuai dengan kode yang sudah bisa diedit (bukan size:6)
-            'kode_kelas' => 'required|string|max:10',
-        ]);
+        $request->validate(['kode_kelas' => 'required|string|max:10']);
 
         $kelas = Kelas::where('kode_kelas', strtoupper($request->kode_kelas))->first();
 
@@ -132,15 +263,98 @@ class KelasController extends Controller
         $user->kelas()->attach($kelas->id);
 
         return redirect()->route('kelas.join')
-            ->with('success', 'Berhasil bergabung ke kelas ' . $kelas->nama_kelas . '!');
+            ->with('success', 'Berhasil bergabung ke ' . $kelas->nama_kelas . '!');
     }
 
-    // SISWA: Keluar dari kelas
+    public function showSiswa(Kelas $kelas)
+    {
+        abort_unless(
+            auth()->user()->kelas()->where('kelas_id', $kelas->id)->exists(), 403
+        );
+
+        $kelas->load(['materis' => fn($q) => $q->latest(), 'staff', 'courses']);
+
+        $courseIds   = $kelas->courses->pluck('id');
+        $myProgress  = StudentProgress::where('user_id', auth()->id())
+                           ->whereIn('course_id', $courseIds)
+                           ->with('course')
+                           ->get();
+
+        // materi_id adalah uuid — cast ke string untuk perbandingan
+        $materiIds   = $kelas->materis->pluck('id')->map(fn($id) => (string) $id);
+        $jawabanSaya = Jawaban::where('student_id', auth()->id())
+                           ->whereIn('materi_id', $materiIds)
+                           ->with('materi')
+                           ->latest()->get();
+
+        return view('kelas.siswa.show', compact('kelas', 'myProgress', 'jawabanSaya'));
+    }
+
     public function leave(Kelas $kelas)
     {
         auth()->user()->kelas()->detach($kelas->id);
 
         return redirect()->route('kelas.join')
-            ->with('success', 'Kamu telah keluar dari kelas ' . $kelas->nama_kelas . '.');
+            ->with('success', 'Kamu telah keluar dari ' . $kelas->nama_kelas . '.');
     }
+
+    // ══════════════════════════════════════════════
+    // STAFF — COURSE CRUD
+    // ══════════════════════════════════════════════
+
+    public function courseStore(Request $request, Kelas $kelas)
+    {
+        abort_if($kelas->staff_id !== auth()->id(), 403);
+
+        $request->validate([
+            'nama_course' => 'required|string|max:255',
+            'deskripsi'   => 'nullable|string',
+        ]);
+
+        // Generate kode_course unik
+        $kode = strtoupper(
+            substr(preg_replace('/[^A-Z0-9]/', '', strtoupper($request->nama_course)), 0, 4)
+        ) . rand(100, 999) . '-' . $kelas->id;
+
+        Course::create([
+            'kelas_id'    => $kelas->id,
+            'nama_course' => $request->nama_course,
+            'kode_course' => $kode,
+            'deskripsi'   => $request->deskripsi ?: null,
+        ]);
+
+        return back()->with('success', 'Course berhasil ditambahkan.');
+    }
+
+    public function courseDestroy(Kelas $kelas, Course $course)
+    {
+        abort_if($kelas->staff_id !== auth()->id(), 403);
+        $course->delete();
+
+        return back()->with('success', 'Course berhasil dihapus.');
+    }
+
+    // ══════════════════════════════════════════════
+    // STAFF — PREVIEW JAWABAN (inline di modal)
+    // ══════════════════════════════════════════════
+
+    public function jawabanPreview(Kelas $kelas, Jawaban $jawaban)
+    {
+        abort_if($kelas->staff_id !== auth()->id(), 403);
+
+        $path = storage_path('app/' . $jawaban->file_path);
+        abort_unless(file_exists($path), 404);
+
+        $ext      = strtolower(pathinfo($jawaban->file_path, PATHINFO_EXTENSION));
+        $mimeMap  = [
+            'pdf'  => 'application/pdf',
+            'jpg'  => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png'  => 'image/png',
+        ];
+        $mime = $mimeMap[$ext] ?? 'application/octet-stream';
+
+        return response()->file($path, ['Content-Type' => $mime]);
+    }
+
 }

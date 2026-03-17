@@ -11,13 +11,9 @@ class Course extends Model
     protected $fillable = [
         'kelas_id',
         'nama_course',
-        'total_materials',
-        'estimated_hours',
-        'deadline',
-    ];
+        'kode_course',  
+        'deskripsi',    
 
-    protected $casts = [
-        'deadline' => 'date',
     ];
 
     public function kelas(): BelongsTo

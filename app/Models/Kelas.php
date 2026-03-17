@@ -20,7 +20,6 @@ class Kelas extends Model
         'deskripsi',
     ];
 
-    // Generate kode unik otomatis saat membuat kelas baru
     protected static function boot()
     {
         parent::boot();
@@ -31,26 +30,28 @@ class Kelas extends Model
         });
     }
 
-    // Staff/guru pemilik kelas
     public function staff(): BelongsTo
     {
         return $this->belongsTo(User::class, 'staff_id');
     }
 
-    // Siswa yang join kelas ini
     public function siswa(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'kelas_siswa', 'kelas_id', 'user_id')
             ->withTimestamps();
     }
 
-    // Course/materi di dalam kelas ini
     public function courses(): HasMany
     {
         return $this->hasMany(Course::class, 'kelas_id');
     }
 
-    // Jumlah siswa
+    // ← BARU: materi yang diunggah untuk kelas ini
+    public function materis(): HasMany
+    {
+        return $this->hasMany(Materi::class, 'kelas_id');
+    }
+
     public function getJumlahSiswaAttribute(): int
     {
         return $this->siswa()->count();

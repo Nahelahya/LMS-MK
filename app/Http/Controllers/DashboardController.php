@@ -75,7 +75,7 @@ class DashboardController extends Controller
             //    bukan Course::all() yang ambil semua course di database
             $kelasSiswa = $user->kelas()->pluck('kelas.id'); // pivot: kelas_siswa ✅
             $my_courses = Course::whereIn('kelas_id', $kelasSiswa)
-                                ->with(['progress' => fn($q) => $q->where('user_id', $user->id)])
+                                ->with(['progresses' => fn($q) => $q->where('user_id', $user->id)])
                                 ->get();
 
             // ✅ Bar chart: aktivitas nyata per hari (7 hari terakhir)
