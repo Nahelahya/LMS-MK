@@ -1,6 +1,6 @@
 @extends('layouts.dash')
 
-@section('title', 'Dashboard Murid')
+@section('title', 'Dashboard ' . auth()->user()->name)
 
 @section('content')
 

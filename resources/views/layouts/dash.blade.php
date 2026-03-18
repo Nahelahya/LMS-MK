@@ -175,8 +175,8 @@
             </a>
 
             <a href="{{ route('materi') }}"
-               class="flex items-center space-x-4 p-4 rounded-2xl transition
-                      {{ request()->is('materi*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
+                class="flex items-center space-x-4 p-4 rounded-2xl transition
+                    {{ request()->is('materi*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
                 <i class="fas fa-book text-lg {{ request()->is('materi*') ? 'text-white' : 'text-gray-400' }}"></i>
                 <span class="font-semibold text-sm">Materi</span>
             </a>
@@ -184,18 +184,19 @@
             @if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin')
             <a href="{{ route('kelas.index') }}"
                class="flex items-center space-x-4 p-4 rounded-2xl transition
-                      {{ request()->is('kelas*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
+                    {{ request()->is('kelas*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
                 <i class="fas fa-chalkboard-teacher text-lg {{ request()->is('kelas*') ? 'text-white' : 'text-gray-400' }}"></i>
                 <span class="font-semibold text-sm">Kelas</span>
             </a>
             @endif
 
-            <a href="/progres"
-               class="flex items-center space-x-4 p-4 rounded-2xl transition
-                      {{ request()->is('progres*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
-                <i class="fas fa-chart-line text-lg {{ request()->is('progres*') ? 'text-white' : 'text-gray-400' }}"></i>
-                <span class="font-semibold text-sm">Progres</span>
-            </a>
+<a href="{{ route('progres.index') }}"
+   class="flex items-center space-x-4 p-4 rounded-2xl transition
+          {{ request()->routeIs('progres*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
+    <i class="fas fa-chart-line text-lg {{ request()->routeIs('progres*') ? 'text-white' : 'text-gray-400' }}"></i>
+    <span class="font-semibold text-sm">Progress</span>
+</a>
+
 
             @if(auth()->user()->role === 'student')
             <a href="{{ route('kelas.join') }}"
@@ -203,6 +204,26 @@
                       {{ request()->is('join-kelas*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
                 <i class="fas fa-chalkboard text-lg {{ request()->is('join-kelas*') ? 'text-white' : 'text-gray-400' }}"></i>
                 <span class="font-semibold text-sm">Kelas Saya</span>
+            </a>
+            @endif
+
+            {{-- Presensi: Student --}}
+            @if(auth()->user()->role === 'student')
+            <a href="{{ route('presensi.index') }}"
+               class="flex items-center space-x-4 p-4 rounded-2xl transition
+                      {{ request()->is('presensi*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
+                <i class="fas fa-clipboard-check text-lg {{ request()->is('presensi*') ? 'text-white' : 'text-gray-400' }}"></i>
+                <span class="font-semibold text-sm">Presensi</span>
+            </a>
+            @endif
+
+            {{-- Presensi: Admin & Staff --}}
+            @if(auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
+            <a href="{{ route('admin.presensi') }}"
+               class="flex items-center space-x-4 p-4 rounded-2xl transition
+                      {{ request()->is('admin/presensi*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
+                <i class="fas fa-clipboard-list text-lg {{ request()->is('admin/presensi*') ? 'text-white' : 'text-gray-400' }}"></i>
+                <span class="font-semibold text-sm">Data Presensi</span>
             </a>
             @endif
 
@@ -218,7 +239,7 @@
             </div>
             @endif
 
-            <a href="/settings"
+            <a href="{{ route('settings.index') }}"
                class="flex items-center space-x-4 p-4 rounded-2xl hover:bg-gray-800 dark:hover:bg-[#1a1d28] transition">
                 <i class="fas fa-cog text-lg text-gray-400"></i>
                 <span class="font-semibold text-sm">Settings</span>
