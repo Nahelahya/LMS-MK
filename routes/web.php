@@ -9,6 +9,7 @@ use App\Http\Controllers\MateriController;
 use App\Http\Controllers\JawabanController;
 use App\Http\Controllers\KelasController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\GithubController;
 
 // ── WELCOME ───────────────────────────────────────────────────────────────────
 Route::get('/', fn() => view('welcome'));
@@ -100,3 +101,6 @@ Route::post('/reset-password',         [ForgotPasswordController::class, 'resetP
 // ── GOOGLE OAUTH ──────────────────────────────────────────────────────────────
 Route::get('/auth/google/redirect', [SocialiteController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [SocialiteController::class, 'callback']);
+// ----------- GITHUB OAUTH -------------------------
+Route::get('/auth/github', [GithubController::class, 'redirect'])->name('auth.github');
+Route::get('/auth/github/callback', [GithubController::class, 'callback'])->name('auth.github.callback');

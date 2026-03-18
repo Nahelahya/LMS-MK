@@ -10,7 +10,11 @@
         <h2 class="text-3xl font-bold">Welcome!</h2>
         <p class="text-gray-200 text-sm">Sign in to your account</p>
     </div>
-
+@if(session('error'))
+    <div class="mb-4 p-3 bg-red-500/20 border border-red-400/30 rounded-xl text-red-300 text-sm text-center">
+        {{ session('error') }}
+    </div>
+@endif
     <form action="{{ route('login') }}" method="POST">
         @csrf
 
@@ -62,7 +66,7 @@
                 <a href="{{ route('google.redirect') }}" class="w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full border border-white/30 transition duration-300">
                     <i class="fab fa-google text-white"></i>
                 </a>
-                <a href="#" class="w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full border border-white/30 transition duration-300">
+                <a href="{{ route('auth.github') }}" class="w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full border border-white/30 transition duration-300">
                     <i class="fab fa-github text-white"></i>
                 </a>
             </div>

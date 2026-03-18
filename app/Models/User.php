@@ -35,6 +35,8 @@ class User extends Authenticatable
         'otp',
         'provider_id',
         'provider_name',
+        'github_id',
+        'avatar',
     ];
 
     /**
