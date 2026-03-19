@@ -299,6 +299,22 @@ return [
     'badge_izin'                => 'EXCUSED',
     'badge_alfa'                => 'ABSENT',
 
-    
+    // ── CHATBOT ──────────────────────────────────────────────
+    'chatbot_title'            => 'AI Assistant',
+    'chatbot_subtitle'         => 'Ask anything about your learning',
+    'chatbot_placeholder'      => 'Type a question... (Enter to send)',
+    'chatbot_open'             => 'Open chatbot',
+    'chatbot_close'            => 'Close chatbot',
+    'chatbot_error'            => 'Sorry, something went wrong. Please try again!',
+    'chatbot_welcome_student'  => 'Hi :name! 👋 I\'m your learning assistant. Ask me anything — grades, assignments, or topics to improve.',
+    'chatbot_welcome_staff'    => 'Hi :name! 👋 I\'m your academic assistant. Ask who needs attention or about class progress.',
+     // Suggested questions – student
+    'chatbot_q_student_1'      => 'Which topics do I need to improve?',
+    'chatbot_q_student_2'      => 'Which assignments haven\'t I submitted?',
+    'chatbot_q_student_3'      => 'What\'s my average score?',
+     // Suggested questions – staff/admin
+    'chatbot_q_staff_1'        => 'Which students need attention?',
+    'chatbot_q_staff_2'        => 'Who has low attendance?',
+    'chatbot_q_staff_3'        => 'Who keeps missing assignments?',
 
 ];

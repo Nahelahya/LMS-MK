@@ -14,6 +14,7 @@ use App\Http\Controllers\{
     ProgressController,
     SettingsController,
     StudentController,
+    ChatbotController,
 };
 use App\Http\Controllers\Auth\GithubController;
 
@@ -36,6 +37,10 @@ Route::middleware('auth')->group(function () {
      Route::get('/users', [StudentController::class, 'index'])->name('students.index');
     Route::get('/users/{user}', [StudentController::class, 'show'])->name('students.show');
     Route::delete('/users/{user}', [StudentController::class, 'destroy'])->name('students.destroy');
+    Route::middleware(['auth'])->group(function () {
+    Route::post('/chatbot/chat', [ChatbotController::class, 'chat'])
+         ->name('chatbot.chat');
+});
 });
 
 // ── MAIN APP (AUTH + VERIFIED) ──────────

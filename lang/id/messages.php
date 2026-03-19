@@ -299,4 +299,22 @@ return [
     'badge_izin'                => 'IZIN',
     'badge_alfa'                => 'ALFA',
 
+        // ── CHATBOT ──────────────────────────────────────────────
+    'chatbot_title'            => 'Asisten AI',
+    'chatbot_subtitle'         => 'Tanya apa saja tentang belajarmu',
+    'chatbot_placeholder'      => 'Ketik pertanyaan... (Enter untuk kirim)',
+    'chatbot_open'             => 'Buka chatbot',
+    'chatbot_close'            => 'Tutup chatbot',
+    'chatbot_error'            => 'Maaf, terjadi kesalahan. Coba lagi ya!', 
+    'chatbot_welcome_student'  => 'Halo :name! 👋 Aku asisten belajarmu. Tanya apa saja — nilai, tugas, atau materi yang perlu diperkuat.',
+    'chatbot_welcome_staff'    => 'Halo :name! 👋 Aku asisten akademik. Tanya siapa siswa yang perlu diawasi atau info perkembangan kelas.',
+    // Suggested questions – student
+    'chatbot_q_student_1'      => 'Materi apa yang belum aku kuasai?',
+    'chatbot_q_student_2'      => 'Tugas apa yang belum aku kumpulkan?',
+    'chatbot_q_student_3'      => 'Bagaimana nilai rata-rataku?',
+    // Suggested questions – staff/admin
+    'chatbot_q_staff_1'        => 'Siswa mana yang perlu diawasi?',
+    'chatbot_q_staff_2'        => 'Siapa yang kehadirannya rendah?',
+    'chatbot_q_staff_3'        => 'Siapa yang sering tidak kumpul tugas?',
+
 ];
