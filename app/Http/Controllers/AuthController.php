@@ -25,49 +25,84 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|string|email|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         $otpCode = rand(100000, 999999);
-
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'student',
-            'status' => 'verify',
-            'otp' => $otpCode,
+            'role'     => 'student',
+            'status'   => 'verify',
+            'otp'      => $otpCode,
         ]);
 
         Mail::to($user->email)->send(new OTPEmail($otpCode));
-
         Auth::login($user);
 
-        // Langsung arahkan ke halaman OTP karena user sudah otomatis login
         return redirect()->route('otp.index')->with('success', 'Akun berhasil dibuat! Silakan masukkan kode OTP dari email.');
     }
 
+    // ── Register Staff (pakai invite code) ────────────────────────────
+    public function showRegisterStaff()
+    {
+        return view('auth.register.staff');
+    }
+
+    public function registerStaff(Request $request)
+    {
+        $request->validate([
+            'name'        => 'required|string|max:255',
+            'email'       => 'required|string|email|unique:users',
+            'password'    => 'required|string|min:8|confirmed',
+            'invite_code' => 'required|string',
+        ]);
+
+        // Cek invite code dari .env
+        if ($request->invite_code !== config('app.staff_invite_code')) {
+            return back()->withErrors([
+                'invite_code' => 'Kode undangan tidak valid.',
+            ])->withInput();
+        }
+
+        $otpCode = rand(100000, 999999);
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'role'     => 'staff',
+            'status'   => 'verify',
+            'otp'      => $otpCode,
+        ]);
+
+        Mail::to($user->email)->send(new OTPEmail($otpCode));
+        Auth::login($user);
+
+        return redirect()->route('otp.index')->with('success', 'Akun staff berhasil dibuat! Silakan masukkan kode OTP dari email.');
+    }
+
+    // ─────────────────────────────────────────────────────────────────
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|string',
+            'email'    => 'required|string',
             'password' => 'required',
         ]);
 
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
-            
+
             if ($request->has('remember')) {
                 Cookie::queue('user_email', $request->email, 1440);
             } else {
                 Cookie::queue(Cookie::forget('user_email'));
             }
 
-            // Arahkan ke dashboard, middleware 'checkstatus' yang akan mencegat jika belum aktif
             return redirect()->intended('dashboard');
-        } // <--- Tadi kurung ini hilang di kode kamu
+        }
 
         return back()->withErrors([
             'email' => 'Nama atau Password salah.',

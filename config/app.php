@@ -14,7 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-
+    'staff_invite_code' => env('STAFF_INVITE_CODE', 'STAFFMK2026'),
     /*
     |--------------------------------------------------------------------------
     | Application Environment

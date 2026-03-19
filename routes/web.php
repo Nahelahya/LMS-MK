@@ -135,3 +135,7 @@ Route::middleware(['auth'])->prefix('settings')->name('settings.')->group(functi
     Route::post('/preferences', [SettingsController::class, 'updatePreferences']) ->name('preferences');
     Route::delete('/photo',     [SettingsController::class, 'deletePhoto'])       ->name('photo.delete');
 });
+
+// Daftar staff
+Route::get('/register/staff',  [AuthController::class, 'showRegisterStaff'])->name('register.staff');
+Route::post('/register/staff', [AuthController::class, 'registerStaff'])->name('register.staff.post');
