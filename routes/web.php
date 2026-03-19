@@ -13,6 +13,7 @@ use App\Http\Controllers\{
     AttendanceController,
     ProgressController,
     SettingsController
+    
 };
 use App\Http\Controllers\Auth\GithubController;
 
@@ -117,4 +118,12 @@ Route::middleware(['auth', 'role:student'])->group(function () {
 
 Route::middleware(['auth', 'role:admin,staff'])->group(function () {
     Route::get('/admin/presensi', [AttendanceController::class, 'adminIndex'])->name('admin.presensi');
+});
+
+Route::middleware(['auth'])->prefix('settings')->name('settings.')->group(function () {
+    Route::get('/',             [SettingsController::class, 'index'])             ->name('index');
+    Route::post('/profile',     [SettingsController::class, 'updateProfile'])     ->name('profile');
+    Route::post('/password',    [SettingsController::class, 'updatePassword'])    ->name('password');
+    Route::post('/preferences', [SettingsController::class, 'updatePreferences']) ->name('preferences');
+    Route::delete('/photo',     [SettingsController::class, 'deletePhoto'])       ->name('photo.delete');
 });

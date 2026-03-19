@@ -171,14 +171,14 @@
                class="flex items-center space-x-4 p-4 rounded-2xl transition
                       {{ request()->is('dashboard') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
                 <i class="fas fa-th-large text-lg {{ request()->is('dashboard') ? 'text-white' : 'text-gray-400' }}"></i>
-                <span class="font-semibold text-sm">Dashboard</span>
+                <span class="font-semibold text-sm">{{ __('messages.dashboard') }}</span>
             </a>
 
             <a href="{{ route('materi') }}"
                 class="flex items-center space-x-4 p-4 rounded-2xl transition
                     {{ request()->is('materi*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
                 <i class="fas fa-book text-lg {{ request()->is('materi*') ? 'text-white' : 'text-gray-400' }}"></i>
-                <span class="font-semibold text-sm">Materi</span>
+                <span class="font-semibold text-sm">{{ __('messages.materi') }}</span>
             </a>
 
             @if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin')
@@ -186,7 +186,7 @@
                class="flex items-center space-x-4 p-4 rounded-2xl transition
                     {{ request()->is('kelas*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
                 <i class="fas fa-chalkboard-teacher text-lg {{ request()->is('kelas*') ? 'text-white' : 'text-gray-400' }}"></i>
-                <span class="font-semibold text-sm">Kelas</span>
+                <span class="font-semibold text-sm">{{ __('messages.kelas') }}</span>
             </a>
             @endif
 
@@ -194,7 +194,7 @@
    class="flex items-center space-x-4 p-4 rounded-2xl transition
           {{ request()->routeIs('progres*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
     <i class="fas fa-chart-line text-lg {{ request()->routeIs('progres*') ? 'text-white' : 'text-gray-400' }}"></i>
-    <span class="font-semibold text-sm">Progress</span>
+    <span class="font-semibold text-sm">{{ __('messages.progres') }}</span>
 </a>
 
 
@@ -213,7 +213,7 @@
                class="flex items-center space-x-4 p-4 rounded-2xl transition
                       {{ request()->is('presensi*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
                 <i class="fas fa-clipboard-check text-lg {{ request()->is('presensi*') ? 'text-white' : 'text-gray-400' }}"></i>
-                <span class="font-semibold text-sm">Presensi</span>
+                <span class="font-semibold text-sm">{{ __('messages.presensi') }}</span>
             </a>
             @endif
 
@@ -223,7 +223,7 @@
                class="flex items-center space-x-4 p-4 rounded-2xl transition
                       {{ request()->is('admin/presensi*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
                 <i class="fas fa-clipboard-list text-lg {{ request()->is('admin/presensi*') ? 'text-white' : 'text-gray-400' }}"></i>
-                <span class="font-semibold text-sm">Data Presensi</span>
+                <span class="font-semibold text-sm">{{ __('messages.presensi') }}</span>
             </a>
             @endif
 
@@ -234,7 +234,7 @@
                    class="flex items-center space-x-4 p-4 rounded-2xl transition
                           {{ request()->is('users*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
                     <i class="fas fa-users text-lg {{ request()->is('users*') ? 'text-white' : 'text-gray-400' }}"></i>
-                    <span class="font-semibold text-sm">Data Siswa</span>
+                    <span class="font-semibold text-sm">{{ __('messages.siswa') }}</span>
                 </a>
             </div>
             @endif
@@ -242,7 +242,7 @@
             <a href="{{ route('settings.index') }}"
                class="flex items-center space-x-4 p-4 rounded-2xl hover:bg-gray-800 dark:hover:bg-[#1a1d28] transition">
                 <i class="fas fa-cog text-lg text-gray-400"></i>
-                <span class="font-semibold text-sm">Settings</span>
+                <span class="font-semibold text-sm">{{ __('messages.settings') }}</span>
             </a>
         </nav>
 
@@ -253,7 +253,7 @@
             <div class="flex items-center justify-between mb-5 px-1">
                 <span class="text-xs text-gray-400 flex items-center gap-2">
                     <i id="toggleIcon" class="fas fa-moon"></i>
-                    <span id="toggleText">Mode Terang</span>
+                    <span id="toggleText">{{ __('messages.key') }}</span>
                 </span>
                 <button
                     onclick="toggleTheme()"
@@ -271,7 +271,8 @@
             {{-- User info --}}
             <div class="flex items-center space-x-3 mb-4">
                 <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">
-                    {{ substr(auth()->user()->name, 0, 1) }}
+                    <img src="{{ auth()->user()->photo ? asset('storage/profile/' . auth()->user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}" 
+     class="w-full h-full rounded-xl object-cover shadow-lg border border-white/20">
                 </div>
                 <div>
                     <p class="text-sm font-bold text-white truncate max-w-[160px]">{{ auth()->user()->name }}</p>
@@ -331,7 +332,8 @@
                 <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-600 rounded-xl lg:rounded-2xl
                             shadow-lg border-2 border-white dark:border-[#1e2130]
                             flex items-center justify-center text-white font-bold">
-                    {{ substr(auth()->user()->name, 0, 1) }}
+                    <img src="{{ auth()->user()->photo ? asset('storage/profile/' . auth()->user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}" 
+     class="w-full h-full rounded-xl object-cover shadow-lg border border-white/20">
                 </div>
             </div>
         </header>
@@ -376,16 +378,16 @@
         if (!btn) return;
 
         if (isDark) {
-            btn.classList.replace('bg-gray-600', 'bg-blue-600');
-            knob.classList.replace('translate-x-1', 'translate-x-6');
-            icon.className = 'fas fa-sun text-yellow-400';
-            text.textContent = 'Mode Gelap';
-        } else {
-            btn.classList.replace('bg-blue-600', 'bg-gray-600');
-            knob.classList.replace('translate-x-6', 'translate-x-1');
-            icon.className = 'fas fa-moon text-gray-400';
-            text.textContent = 'Mode Terang';
-        }
+        btn.classList.replace('bg-gray-600', 'bg-blue-600');
+        knob.classList.replace('translate-x-1', 'translate-x-6');
+        icon.className = 'fas fa-sun text-yellow-400';
+        text.textContent = "{{ __('messages.mode_gelap') }}"; 
+    } else {
+        btn.classList.replace('bg-blue-600', 'bg-gray-600');
+        knob.classList.replace('translate-x-6', 'translate-x-1');
+        icon.className = 'fas fa-moon text-gray-400';
+        text.textContent = "{{ __('messages.mode_terang') }}";
+    }
     }
 </script>
 

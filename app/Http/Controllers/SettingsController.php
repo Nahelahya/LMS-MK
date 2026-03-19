@@ -4,66 +4,62 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class SettingsController extends Controller
 {
     public function index()
     {
-        return view('settings.index', [
-            'user' => Auth::user()
-        ]);
+        return view('settings.index', ['user' => auth()->user()]);
     }
 
-public function updateProfile(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'photo' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
-    ]);
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+        
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'photo' => 'nullable|image|mimes:jpg,png,jpeg,webp|max:2048',
+        ]);
 
-    $user = auth()->user();
-
-    // upload foto
-    if ($request->hasFile('photo')) {
-
-        // hapus lama (optional)
-        if ($user->photo) {
-            Storage::delete('public/profile/' . $user->photo);
+        if ($request->hasFile('photo')) {
+            // Hapus foto lama jika ada
+            if ($user->photo) {
+                Storage::disk('public')->delete('profile/' . $user->photo);
+            }
+            $fileName = time() . '_' . $user->id . '.' . $request->photo->extension();
+            $request->photo->storeAs('profile', $fileName, 'public');
+            $user->photo = $fileName;
         }
 
-        $file = $request->file('photo');
-        $filename = time() . '.' . $file->getClientOriginalExtension();
-        $file->storeAs('public/profile', $filename);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->save();
 
-        $user->photo = $filename;
-    }
-
-    $user->name = $request->name;
-    $user->save();
-
-    return back()->with('success', 'Profile updated');
-}
-    public function updatePassword(Request $request)
-    {
-        $request->validate([
-            'password' => 'required|min:12|confirmed'
-        ]);
-
-        Auth::user()->update([
-            'password' => Hash::make($request->password)
-        ]);
-
-        return back()->with('success', 'Password updated');
+        return back()->with('success', __('messages.profile_updated'));
     }
 
     public function updatePreferences(Request $request)
     {
-        Auth::user()->update([
-            'language' => $request->language
-        ]);
+        $user = auth()->user();
+        $user->language = $request->language;
+        $user->save();
 
-        return back()->with('success', 'Preferences updated');
+        // Set bahasa secara instant untuk session ini
+        session(['locale' => $request->language]);
+
+        return back()->with('success', 'Language updated!');
+    }
+
+    public function deletePhoto()
+    {
+        $user = auth()->user();
+        if ($user->photo) {
+            Storage::disk('public')->delete('profile/' . $user->photo);
+            $user->photo = null;
+            $user->save();
+        }
+        return back()->with('success', 'Photo deleted!');
     }
 }

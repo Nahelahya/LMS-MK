@@ -37,6 +37,8 @@ class User extends Authenticatable
         'provider_name',
         'github_id',
         'avatar',
+        'photo',
+        'language',
     ];
 
     /**
@@ -71,5 +73,16 @@ public function kelas()
 {
     return $this->belongsToMany(Kelas::class, 'kelas_siswa', 'user_id', 'kelas_id')
         ->withTimestamps();
-}
+
+        }
+            public function getPhotoUrlAttribute(): string
+    {
+        if ($this->photo) {
+            return asset('storage/profile/' . $this->photo);
+        }
+
+        // Gunakan UI Avatars sebagai fallback
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name)
+            . '&background=6366f1&color=fff&size=128';
+    }
 }
