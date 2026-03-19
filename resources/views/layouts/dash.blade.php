@@ -203,7 +203,7 @@
                class="flex items-center space-x-4 p-4 rounded-2xl transition
                       {{ request()->is('join-kelas*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
                 <i class="fas fa-chalkboard text-lg {{ request()->is('join-kelas*') ? 'text-white' : 'text-gray-400' }}"></i>
-                <span class="font-semibold text-sm">Kelas Saya</span>
+                <span class="font-semibold text-sm">{{ __('messages.kelas') }}</span>
             </a>
             @endif
 
@@ -229,7 +229,7 @@
 
             @if(auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
             <div class="pt-4">
-                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest px-4 mb-2">Manajemen</p>
+                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest px-4 mb-2">{{ __('messages.manajemen') }}</p>
                 <a href="/users"
                    class="flex items-center space-x-4 p-4 rounded-2xl transition
                           {{ request()->is('users*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">

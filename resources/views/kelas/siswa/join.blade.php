@@ -1,13 +1,17 @@
 @extends('layouts.dash')
-@section('title', 'Kelas Saya')
-@section('content')
+@section('title', __('messages.kelas'))
 
+@section('content')
 <div class="mb-6">
-    <h2 class="text-2xl font-black text-[#1B254B] dark:text-gray-100">Kelas Saya</h2>
-    <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">Join kelas dengan kode dari gurumu</p>
+    <h2 class="text-2xl font-black text-[#1B254B] dark:text-gray-100">
+        {{ __('messages.kelas') }}
+    </h2>
+    <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">
+        {{ __('messages.kelas_student_desc') }}
+    </p>
 </div>
 
-{{-- Flash --}}
+{{-- Flash messages --}}
 @if(session('success'))
 <div class="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800
             text-green-700 dark:text-green-400 text-sm font-semibold px-4 py-3 rounded-xl mb-4">
@@ -24,12 +28,20 @@
 {{-- Form join kelas --}}
 <div class="bg-white dark:bg-[#1a1d28] rounded-2xl p-6 shadow-sm mb-6 max-w-md
             border border-transparent dark:border-[#1e2130]">
-    <h3 class="font-black text-[#1B254B] dark:text-gray-100 mb-4">Masukkan Kode Kelas</h3>
+    <h3 class="font-black text-[#1B254B] dark:text-gray-100 mb-4">
+        {{ __('messages.masukkan_kode_kelas') }}
+    </h3>
     <form action="{{ route('kelas.join.post') }}" method="POST" class="flex gap-3">
         @csrf
-        <input type="text" name="kode_kelas"
+        <input type="text"
+               name="kode_kelas"
                maxlength="10"
-               placeholder="Contoh: AB12CD"
+               {{--
+                   placeholder di dalam atribut HTML tidak bisa pakai {{ }} biasa
+                   karena ada tanda kutip ganda di sekitarnya. Solusi: pakai e()
+                   (alias htmlspecialchars) untuk aman, lalu bungkus dengan tanda kutip tunggal.
+               --}}
+               placeholder="{{ __('messages.placeholder_kode_kelas') }}"
                value="{{ old('kode_kelas') }}"
                oninput="this.value = this.value.toUpperCase()"
                class="flex-1 border border-gray-200 dark:border-[#1e2130]
@@ -40,22 +52,31 @@
                       focus:outline-none focus:ring-2 focus:ring-blue-500">
         <button type="submit"
                 class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-3 rounded-xl transition text-sm">
-            Join
+            {{ __('messages.tombol_join') }}
         </button>
     </form>
 </div>
 
 {{-- Kelas yang diikuti --}}
-<h3 class="font-black text-[#1B254B] dark:text-gray-100 mb-3">Kelas yang Diikuti</h3>
+<h3 class="font-black text-[#1B254B] dark:text-gray-100 mb-3">
+    {{ __('messages.kelas_diikuti') }}
+</h3>
 
 @if($myKelas->isEmpty())
-<div class="bg-white dark:bg-[#1a1d28] rounded-2xl p-10 text-center shadow-sm border border-transparent dark:border-[#1e2130]">
+{{-- Empty state --}}
+<div class="bg-white dark:bg-[#1a1d28] rounded-2xl p-10 text-center shadow-sm
+            border border-transparent dark:border-[#1e2130]">
     <div class="w-14 h-14 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
         <i class="fas fa-chalkboard text-blue-300 dark:text-blue-500 text-xl"></i>
     </div>
-    <p class="text-[#1B254B] dark:text-gray-100 font-bold mb-1">Belum join kelas</p>
-    <p class="text-sm text-gray-400 dark:text-gray-500">Minta kode kelas ke gurumu dan masukkan di atas</p>
+    <p class="text-[#1B254B] dark:text-gray-100 font-bold mb-1">
+        {{ __('messages.belum_join_kelas') }}
+    </p>
+    <p class="text-sm text-gray-400 dark:text-gray-500">
+        {{ __('messages.petunjuk_join_kelas') }}
+    </p>
 </div>
+
 @else
 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
     @foreach($myKelas as $k)
@@ -64,38 +85,67 @@
                 hover:shadow-md transition">
 
         <div class="flex items-start justify-between mb-3">
-            <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl
+                        flex items-center justify-center flex-shrink-0">
                 <i class="fas fa-chalkboard-teacher text-indigo-400 dark:text-indigo-400"></i>
             </div>
-            <span class="text-xs text-gray-300 dark:text-gray-600 font-mono font-bold">{{ $k->kode_kelas }}</span>
+            <span class="text-xs text-gray-300 dark:text-gray-600 font-mono font-bold">
+                {{ $k->kode_kelas }}
+            </span>
         </div>
 
-        <h4 class="font-black text-[#1B254B] dark:text-gray-100 text-sm mb-0.5">{{ $k->nama_kelas }}</h4>
-        <p class="text-xs text-blue-500 dark:text-blue-400 font-semibold mb-1">{{ $k->mata_pelajaran }}</p>
+        <h4 class="font-black text-[#1B254B] dark:text-gray-100 text-sm mb-0.5">
+            {{ $k->nama_kelas }}
+        </h4>
+        <p class="text-xs text-blue-500 dark:text-blue-400 font-semibold mb-1">
+            {{ $k->mata_pelajaran }}
+        </p>
         <p class="text-xs text-gray-400 dark:text-gray-500 mb-4">
             <i class="fas fa-user mr-1"></i>{{ $k->staff->name ?? '–' }}
         </p>
 
         <div class="flex items-center justify-between mb-3">
             <span class="text-xs text-gray-400 dark:text-gray-500">
-                <i class="fas fa-book mr-1"></i>{{ $k->materis->count() }} materi
+                <i class="fas fa-book mr-1"></i>
+                {{--
+                    Terjemahan dengan parameter: jumlah materi dinamis
+                    en: ":count material(s)"  →  "3 material(s)"
+                    id: ":count materi"        →  "3 materi"
+                --}}
+                {{ __('messages.jumlah_materi_student', ['count' => $k->materis->count()]) }}
             </span>
         </div>
 
         {{-- Tombol Masuk + Keluar --}}
         <div class="flex gap-2">
-            {{-- ✅ TOMBOL MASUK ke detail kelas --}}
+
+            {{-- Tombol Masuk ke detail kelas --}}
             <a href="{{ route('kelas.siswa.show', $k) }}"
-               class="flex-1 text-center bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2.5 rounded-xl transition">
-                <i class="fas fa-door-open mr-1.5"></i>Masuk Kelas
+               class="flex-1 text-center bg-blue-600 hover:bg-blue-700 text-white
+                      text-xs font-bold py-2.5 rounded-xl transition">
+                <i class="fas fa-door-open mr-1.5"></i>{{ __('messages.masuk_kelas') }}
             </a>
 
+            {{--
+                Tombol Keluar — confirm dialog ada di dalam atribut onsubmit (JavaScript),
+                bukan di dalam HTML biasa. Kita tidak bisa memakai {{ }} di dalam string JS
+                begitu saja karena tanda kutip bisa merusak sintaks JS.
+
+                Solusinya: gunakan @js() directive (Laravel 9+) atau json_encode() untuk
+                menghasilkan string JS yang aman, termasuk escape tanda kutip di nama kelas.
+
+                Contoh: @js(__('messages.konfirmasi_keluar_kelas', ['name' => $k->nama_kelas]))
+                menghasilkan: "Leave class \"XII RPL 1\"?" — aman di dalam atribut JS.
+            --}}
             <form action="{{ route('kelas.leave', $k) }}" method="POST"
-                  onsubmit="return confirm('Keluar dari kelas {{ $k->nama_kelas }}?')">
+                  onsubmit="return confirm({{ Js::from(__('messages.konfirmasi_keluar_kelas', ['name' => $k->nama_kelas])) }})">
                 @csrf
                 @method('DELETE')
-                <button class="bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50
-                               text-red-500 dark:text-red-400 text-xs font-bold px-3 py-2.5 rounded-xl transition">
+                <button type="submit"
+                        class="bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50
+                               text-red-500 dark:text-red-400 text-xs font-bold
+                               px-3 py-2.5 rounded-xl transition"
+                        title="{{ __('messages.keluar_kelas') }}">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
             </form>

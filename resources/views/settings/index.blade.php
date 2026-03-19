@@ -131,41 +131,84 @@
     </div>
 
     {{-- ══════════════ CARD: GANTI PASSWORD ══════════════ --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100">
-            <h2 class="font-semibold text-gray-900 flex items-center gap-2">
-                <i class="fas fa-lock text-red-500"></i> {{ __('messages.change_password') }}
-            </h2>
-            <p class="text-xs text-gray-500 mt-0.5">{{ __('messages.password_instruction') }}</p>
-        </div>
+   <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100">
+        <h2 class="font-semibold text-gray-900 flex items-center gap-2">
+            <i class="fas fa-lock text-red-500"></i> {{ __('messages.change_password') }}
+        </h2>
+        <p class="text-xs text-gray-500 mt-0.5">{{ __('messages.password_instruction') }}</p>
+    </div>
 
-        <form action="{{ route('settings.password') }}" method="POST" class="px-6 py-5 space-y-4"
-              x-data="{ showCurrent: false, showNew: false, showConfirm: false }">
-            @csrf
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('messages.current_password') }}</label>
-                <div class="relative">
-                    <input :type="showCurrent ? 'text' : 'password'" name="current_password"
-                           class="w-full border border-gray-200 rounded-xl px-4 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition">
-                </div>
-            </div>
+    <form action="{{ route('settings.password') }}" method="POST" class="px-6 py-5 space-y-4"
+          x-data="{ showCurrent: false, showNew: false, showConfirm: false }">
+        @csrf
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('messages.new_password') }}</label>
-                <div class="relative">
-                    <input :type="showNew ? 'text' : 'password'" name="password"
-                           class="w-full border border-gray-200 rounded-xl px-4 py-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition">
-                </div>
-            </div>
-
-            <div class="flex justify-end pt-1">
-                <button type="submit"
-                        class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-6 py-2.5 rounded-xl transition shadow-sm">
-                    <i class="fas fa-key mr-1"></i> {{ __('messages.update_password') }}
+        {{-- Current Password --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+                {{ __('messages.current_password') }}
+            </label>
+            <div class="relative">
+                <input :type="showCurrent ? 'text' : 'password'"
+                       name="current_password"
+                       placeholder="{{ __('messages.placeholder_current_password') }}"
+                       class="w-full border border-gray-200 rounded-xl px-4 py-2.5 pr-10
+                              text-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition">
+                <button type="button"
+                        @click="showCurrent = !showCurrent"
+                        class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600">
+                    <i :class="showCurrent ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                 </button>
             </div>
-        </form>
-    </div>
+        </div>
+
+        {{-- New Password --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+                {{ __('messages.new_password') }}
+            </label>
+            <div class="relative">
+                <input :type="showNew ? 'text' : 'password'"
+                       name="password"
+                       placeholder="{{ __('messages.placeholder_new_password') }}"
+                       class="w-full border border-gray-200 rounded-xl px-4 py-2.5 pr-10
+                              text-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition">
+                <button type="button"
+                        @click="showNew = !showNew"
+                        class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600">
+                    <i :class="showNew ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                </button>
+            </div>
+        </div>
+
+        {{-- Confirm Password --}}
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+                {{ __('messages.placeholder_confirm_password') }}
+            </label>
+            <div class="relative">
+                <input :type="showConfirm ? 'text' : 'password'"
+                       name="password_confirmation"
+                       placeholder="{{ __('messages.placeholder_confirm_password') }}"
+                       class="w-full border border-gray-200 rounded-xl px-4 py-2.5 pr-10
+                              text-sm focus:outline-none focus:ring-2 focus:ring-red-300 transition">
+                <button type="button"
+                        @click="showConfirm = !showConfirm"
+                        class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600">
+                    <i :class="showConfirm ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex justify-end pt-1">
+            <button type="submit"
+                    class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium
+                           px-6 py-2.5 rounded-xl transition shadow-sm">
+                <i class="fas fa-key mr-1"></i> {{ __('messages.update_password') }}
+            </button>
+        </div>
+    </form>
+</div>
 
     {{-- ══════════════ CARD: PREFERENSI ══════════════ --}}
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">

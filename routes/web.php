@@ -12,8 +12,8 @@ use App\Http\Controllers\{
     KelasController,
     AttendanceController,
     ProgressController,
-    SettingsController
-    
+    SettingsController,
+    StudentController,
 };
 use App\Http\Controllers\Auth\GithubController;
 
@@ -33,6 +33,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/verify-otp', [VerificationController::class, 'index'])->name('otp.index');
     Route::post('/verify-otp', [VerificationController::class, 'verify'])->name('otp.verify');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+     Route::get('/users', [StudentController::class, 'index'])->name('students.index');
+    Route::get('/users/{user}', [StudentController::class, 'show'])->name('students.show');
+    Route::delete('/users/{user}', [StudentController::class, 'destroy'])->name('students.destroy');
 });
 
 // ── MAIN APP (AUTH + VERIFIED) ──────────

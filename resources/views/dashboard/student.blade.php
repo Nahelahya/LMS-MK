@@ -6,15 +6,19 @@
 
 {{-- Greeting --}}
 <div class="mb-6">
-    <h2 class="text-2xl font-black text-[#1B254B]">Halo, {{ auth()->user()->name }} 👋</h2>
-    <p class="text-sm text-gray-400 mt-1">Semangat belajar hari ini!</p>
+    <h2 class="text-2xl font-black text-[#1B254B]">
+        {{ __('messages.halo_student', ['name' => auth()->user()->name]) }}
+    </h2>
+    <p class="text-sm text-gray-400 mt-1">{{ __('messages.semangat_belajar') }}</p>
 </div>
 
 {{-- Stat cards atas --}}
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
 
     <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Skor Terakhir</p>
+        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">
+            {{ __('messages.skor_terakhir') }}
+        </p>
         <p class="text-3xl font-black text-[#1B254B]">{{ $my_progress->last_score ?? 0 }}</p>
         <p class="text-xs text-blue-400 mt-1 font-semibold">
             @if($my_progress && $my_progress->status_adaptif)
@@ -26,21 +30,27 @@
     </div>
 
     <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Streak Belajar</p>
+        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">
+            {{ __('messages.streak_belajar') }}
+        </p>
         <p class="text-3xl font-black text-[#1B254B]">{{ $streak }}</p>
-        <p class="text-xs text-orange-400 mt-1 font-semibold">hari berturut-turut</p>
+        <p class="text-xs text-orange-400 mt-1 font-semibold">{{ __('messages.hari_berturut') }}</p>
     </div>
 
     <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Course Diikuti</p>
+        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">
+            {{ __('messages.course_diikuti') }}
+        </p>
         <p class="text-3xl font-black text-[#1B254B]">{{ $my_courses->count() }}</p>
-        <p class="text-xs text-green-400 mt-1 font-semibold">course aktif</p>
+        <p class="text-xs text-green-400 mt-1 font-semibold">{{ __('messages.course_aktif') }}</p>
     </div>
 
     <div class="bg-white rounded-2xl p-5 shadow-sm">
-        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Waktu Minggu Ini</p>
+        <p class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">
+            {{ __('messages.waktu_minggu_ini') }}
+        </p>
         <p class="text-3xl font-black text-[#1B254B]">{{ round($weekly_hours->sum('hours'), 1) }}</p>
-        <p class="text-xs text-purple-400 mt-1 font-semibold">jam belajar</p>
+        <p class="text-xs text-purple-400 mt-1 font-semibold">{{ __('messages.jam_belajar') }}</p>
     </div>
 
 </div>
@@ -54,8 +64,10 @@
         {{-- Course Saya --}}
         <div class="bg-white rounded-2xl p-6 shadow-sm">
             <div class="flex items-center justify-between mb-5">
-                <h3 class="font-black text-[#1B254B] text-base">Course Saya</h3>
-                <span class="text-xs text-gray-400 font-semibold">{{ $my_courses->count() }} course</span>
+                <h3 class="font-black text-[#1B254B] text-base">{{ __('messages.course_saya') }}</h3>
+                <span class="text-xs text-gray-400 font-semibold">
+                    {{ $my_courses->count() }} {{ __('messages.course_label') }}
+                </span>
             </div>
 
             <div class="space-y-5">
@@ -83,20 +95,22 @@
                     <div>
                         <p class="font-bold text-[#1B254B] text-sm">{{ $course->nama_course }}</p>
                         <div class="flex items-center gap-3 mt-1">
+
                             {{-- Waktu tersisa --}}
                             <span class="flex items-center gap-1 text-xs text-gray-400">
                                 <i class="fas fa-clock text-[10px]"></i>
                                 @if($pct >= 100)
-                                    Selesai
+                                    {{ __('messages.status_selesai') }}
                                 @elseif(isset($course->estimated_hours) && $course->estimated_hours > 0)
                                     @php
                                         $rem = $course->estimated_hours * (1 - $pct / 100);
                                         $h   = (int) $rem;
                                         $m   = (int) round(($rem - $h) * 60);
                                     @endphp
-                                    {{ $h > 0 ? $h.' jam' : '' }}{{ $m > 0 ? ' '.$m.' mnt' : '' }} tersisa
+                                    {{-- Bangun string waktu tersisa yang bisa diterjemahkan --}}
+                                    {{ $h > 0 ? $h.' '.__('messages.jam_unit') : '' }}{{ $m > 0 ? ' '.$m.' '.__('messages.mnt_unit') : '' }} {{ __('messages.tersisa') }}
                                 @else
-                                    Sedang berjalan
+                                    {{ __('messages.status_berjalan') }}
                                 @endif
                             </span>
 
@@ -104,9 +118,10 @@
                             @if(isset($course->deadline) && $course->deadline)
                             <span class="flex items-center gap-1 text-xs text-gray-400">
                                 <i class="fas fa-calendar text-[10px]"></i>
-                                Tenggat {{ \Carbon\Carbon::parse($course->deadline)->translatedFormat('d M') }}
+                                {{ __('messages.tenggat') }} {{ \Carbon\Carbon::parse($course->deadline)->translatedFormat('d M') }}
                             </span>
                             @endif
+
                         </div>
                     </div>
 
@@ -133,21 +148,21 @@
                     @endif
                     @if($progress && $progress->is_at_risk)
                     <span class="text-[10px] font-bold bg-yellow-50 text-yellow-600 px-2 py-0.5 rounded-full">
-                        ⚠ Perlu perhatian
+                        ⚠ {{ __('messages.perlu_perhatian') }}
                     </span>
                     @endif
                 </div>
             </div>
 
             @empty
-            <p class="text-sm text-gray-400 text-center py-4">Belum ada course yang diikuti.</p>
+            <p class="text-sm text-gray-400 text-center py-4">{{ __('messages.belum_ada_course') }}</p>
             @endforelse
             </div>
         </div>
 
         {{-- Bar chart mingguan --}}
         <div class="bg-white rounded-2xl p-6 shadow-sm">
-            <h3 class="font-black text-[#1B254B] text-base mb-5">Aktivitas Belajar Minggu Ini</h3>
+            <h3 class="font-black text-[#1B254B] text-base mb-5">{{ __('messages.aktivitas_minggu_ini') }}</h3>
             <div class="flex items-end gap-2 h-24">
                 @php $maxH = $weekly_hours->max('hours') ?: 1; @endphp
                 @foreach($weekly_hours as $i => $day)
@@ -157,7 +172,8 @@
                 @endphp
                 <div class="flex-1 flex flex-col items-center gap-1">
                     <span class="text-[10px] font-bold {{ $isToday ? 'text-blue-500' : 'text-gray-300' }}">
-                        {{ $day['hours'] > 0 ? $day['hours'].'j' : '' }}
+                        {{-- Label jam singkat di atas bar: "2h" (EN) atau "2j" (ID) --}}
+                        {{ $day['hours'] > 0 ? $day['hours'].__('messages.jam_singkat') : '' }}
                     </span>
                     <div class="w-full rounded-t-lg weekly-bar {{ $isToday ? 'bg-blue-500' : 'bg-blue-100' }} transition-all duration-700"
                          style="height: 0%; min-height: 3px;"
@@ -181,17 +197,17 @@
             <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-4">
                 <i class="fas fa-bolt text-white"></i>
             </div>
-            <h3 class="font-black text-lg mb-1">Quiz Adaptif</h3>
-            <p class="text-blue-100 text-xs mb-4">Soal disesuaikan dengan level belajarmu</p>
+            <h3 class="font-black text-lg mb-1">{{ __('messages.quiz_adaptif') }}</h3>
+            <p class="text-blue-100 text-xs mb-4">{{ __('messages.quiz_adaptif_desc') }}</p>
             <a href="#"
                class="block w-full bg-white text-blue-600 text-center text-sm font-black py-3 rounded-xl hover:bg-blue-50 transition">
-                Mulai Sekarang
+                {{ __('messages.mulai_sekarang') }}
             </a>
         </div>
 
         {{-- Log Aktivitas --}}
         <div class="bg-white rounded-2xl p-6 shadow-sm">
-            <h3 class="font-black text-[#1B254B] text-base mb-4">Log Aktivitas</h3>
+            <h3 class="font-black text-[#1B254B] text-base mb-4">{{ __('messages.log_aktivitas') }}</h3>
 
             <div class="space-y-4">
             @forelse($activities as $log)
@@ -203,20 +219,20 @@
                 </div>
             </div>
             @empty
-            <p class="text-sm text-gray-400 text-center py-2">Belum ada aktivitas.</p>
+            <p class="text-sm text-gray-400 text-center py-2">{{ __('messages.belum_ada_aktivitas') }}</p>
             @endforelse
             </div>
         </div>
 
-        {{-- Progress ringkas --}}
+        {{-- Peringatan At-Risk --}}
         @if($my_progress && $my_progress->is_at_risk)
         <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-5">
             <div class="flex items-center gap-2 mb-2">
                 <i class="fas fa-exclamation-triangle text-yellow-500 text-sm"></i>
-                <p class="font-black text-yellow-700 text-sm">Perhatian Diperlukan</p>
+                <p class="font-black text-yellow-700 text-sm">{{ __('messages.perhatian_diperlukan') }}</p>
             </div>
             <p class="text-xs text-yellow-600">
-                Progresmu membutuhkan perhatian lebih. Yuk tingkatkan intensitas belajar!
+                {{ __('messages.pesan_at_risk') }}
             </p>
         </div>
         @endif
