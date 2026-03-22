@@ -398,4 +398,54 @@ class QuizController extends Controller
             return 'Tidak dapat menilai jawaban otomatis.';
         }
     }
+        public function rekapQuiz(Kelas $kelas)
+    {
+        abort_if($kelas->staff_id !== auth()->id(), 403);
+        // Semua siswa di kelas ini
+        $siswaList = DB::table('kelas_siswa as ks')
+            ->join('users as u', 'ks.user_id', '=', 'u.id')
+            ->where('ks.kelas_id', $kelas->id)
+            ->where('u.role', 'student')
+            ->select('u.id', 'u.name', 'u.email')
+            ->orderBy('u.name')
+            ->get();
+         // Sesi quiz terakhir per siswa untuk kelas ini
+        $lastSessions = DB::table('quiz_sessions')
+            ->where('kelas_id', $kelas->id)
+            ->where('status', 'selesai')
+            ->select(
+                'user_id',
+                'mata_pelajaran',
+                DB::raw('MAX(skor_akhir) as skor_terbaik'),
+                DB::raw('COUNT(*) as jumlah_quiz'),
+                DB::raw('MAX(created_at) as terakhir_quiz')
+            )
+            ->groupBy('user_id', 'mata_pelajaran')
+            ->get()
+            ->groupBy('user_id');
+         // Jumlah soal tersedia per mata pelajaran
+        $jumlahSoal = DB::table('soals')
+            ->where('kelas_id', $kelas->id)
+            ->select('mata_pelajaran', DB::raw('COUNT(*) as total'))
+            ->groupBy('mata_pelajaran')
+            ->get();
+        // Rata-rata skor per mata pelajaran (semua siswa)
+        $avgPerMapel = DB::table('quiz_sessions')
+            ->where('kelas_id', $kelas->id)
+            ->where('status', 'selesai')
+            ->select(
+                'mata_pelajaran',
+                DB::raw('ROUND(AVG(skor_akhir)::numeric, 1) as avg_skor'),
+                DB::raw('COUNT(DISTINCT user_id) as jumlah_peserta')
+            )
+            ->groupBy('mata_pelajaran')
+            ->get();
+        return view('quiz.staff.rekap', compact(
+            'kelas',
+            'siswaList',
+            'lastSessions',
+            'jumlahSoal',
+            'avgPerMapel'
+        ));
+    }
 }

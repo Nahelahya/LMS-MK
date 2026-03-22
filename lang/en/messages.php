@@ -317,4 +317,57 @@ return [
     'chatbot_q_staff_2'        => 'Who has low attendance?',
     'chatbot_q_staff_3'        => 'Who keeps missing assignments?',
 
+    // =========================================================
+    // QUIZ ADAPTIF
+    // =========================================================
+    'quiz_mulai'                => 'Start Quiz',
+    'quiz_pilih_kelas'          => 'Select Class',
+    'quiz_soal_ke'              => 'Question :n of :total',
+    'quiz_level_label'          => 'Level',
+    'quiz_benar'                => 'Correct',
+    'quiz_salah'                => 'Wrong',
+    'quiz_total_soal'           => 'Total Questions',
+    'quiz_jawab_lanjut'         => 'Answer & Continue',
+    'quiz_selesai'              => 'Finish Quiz',
+    'quiz_hasil_judul'          => 'Quiz Results',
+    'quiz_skor_akhir'           => 'Your Final Score',
+    'quiz_review_judul'         => 'Answer Review',
+    'quiz_motivasi_advance'     => 'Excellent! You mastered this material. Keep it up! 🎉',
+    'quiz_motivasi_normal'      => 'Good job! Your score is decent. Review your answers below to improve!',
+    'quiz_motivasi_remedial'    => 'Don\'t give up! Every mistake is a learning opportunity. Review the explanations below and try again. 💪',
+    'quiz_feedback_benar'       => 'Correct!',
+    'quiz_feedback_salah'       => 'Incorrect',
+    'quiz_jawaban_benar_label'  => 'Correct answer',
+    'quiz_kembali_dashboard'    => 'Back to Dashboard',
+    'quiz_belum_ada_soal'       => 'No questions available for this subject yet.',
+    'quiz_ai_dinilai'           => 'This essay answer will be automatically graded by AI',
+ 
+    // =========================================================
+    // REGISTER STAFF
+    // =========================================================
+    'register_staff_judul'      => 'Staff Registration',
+    'register_staff_desc'       => 'Enter the invitation code provided by the admin.',
+    'register_staff_tombol'     => 'Register as Staff',
+    'invite_code_label'         => 'Invitation Code',
+    'invite_code_hint'          => '(request from admin)',
+    'sudah_punya_akun'          => 'Already have an account?',
+    'masuk_disini'              => 'Sign in here',
+    'daftar_sebagai_siswa'      => 'Register as student?',
+    'klik_disini'               => 'Click here',
+ 
+    // =========================================================
+    // DETAIL SISWA (STAFF VIEW)
+    // =========================================================
+    'detail_siswa_judul'        => 'Student Detail',
+    'nilai_per_mapel'           => 'Grades per Subject',
+    'riwayat_kehadiran'         => 'Attendance History',
+    'riwayat_penilaian'         => 'Full Grade History',
+    'belum_ada_nilai_mapel'     => 'No grade data yet.',
+    'belum_ada_riwayat_hadir'   => 'No attendance history yet.',
+    'perlu_perhatian_badge'     => 'Needs Attention',
+    'status_normal_badge'       => 'Normal',
+    'min_label'                 => 'Min',
+    'max_label'                 => 'Max',
+    'penilaian_label'           => 'assessments',
+
 ];

@@ -151,7 +151,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/kelas/{kelas}/soal',         [QuizController::class, 'soalIndex'])->name('quiz.soal.index');
     Route::post('/kelas/{kelas}/soal',        [QuizController::class, 'soalStore'])->name('quiz.soal.store');
     Route::delete('/kelas/{kelas}/soal/{id}', [QuizController::class, 'soalDestroy'])->name('quiz.soal.destroy');
-
+    Route::patch('/kelas/{kelas}/materi/{materi}/deadline', [KelasController::class, 'materiUpdateDeadline'])->name('kelas.materi.deadline');
+    Route::get('/kelas/{kelas}/jawaban/{jawaban}/preview',  [KelasController::class, 'jawabanPreview'])->name('kelas.jawaban.preview');
+    Route::get('/kelas/{kelas}/jawaban/{jawaban}/download', [KelasController::class, 'jawabanDownload'])->name('kelas.jawaban.download');
+    Route::get('/kelas/{kelas}/quiz-rekap', [QuizController::class, 'rekapQuiz'])->name('quiz.rekap');
     // ── Student: quiz ──────────────────────────────
     Route::post('/quiz/start',           [QuizController::class, 'start'])->name('quiz.start');
     Route::get('/quiz/{session}/soal',   [QuizController::class, 'showSoal'])->name('quiz.soal');

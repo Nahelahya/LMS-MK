@@ -15,8 +15,8 @@ return [
     'settings'           => 'Pengaturan',
     'light_mode'         => 'Mode Terang',
     'dark_mode'          => 'Mode Gelap',
-    'mode_gelap'         => 'Mode Gelap',   // alias – fix bug 'messages.mode_gelap'
-    'mode_terang'        => 'Mode Terang',  // alias – fix bug 'messages.mode_terang'
+    'mode_gelap'         => 'Mode Gelap',   
+    'mode_terang'        => 'Mode Terang',  
     'keluar'             => 'Keluar',
 
     // =========================================================
@@ -316,5 +316,55 @@ return [
     'chatbot_q_staff_1'        => 'Siswa mana yang perlu diawasi?',
     'chatbot_q_staff_2'        => 'Siapa yang kehadirannya rendah?',
     'chatbot_q_staff_3'        => 'Siapa yang sering tidak kumpul tugas?',
+
+    // QUIZ ADAPTIF
+    'quiz_mulai'                => 'Mulai Quiz',
+    'quiz_pilih_kelas'          => 'Pilih Kelas',
+    'quiz_soal_ke'              => 'Soal :n dari :total',
+    'quiz_level_label'          => 'Level',
+    'quiz_benar'                => 'Benar',
+    'quiz_salah'                => 'Salah',
+    'quiz_total_soal'           => 'Total Soal',
+    'quiz_jawab_lanjut'         => 'Jawab & Lanjut',
+    'quiz_selesai'              => 'Selesai Quiz',
+    'quiz_hasil_judul'          => 'Hasil Quiz',
+    'quiz_skor_akhir'           => 'Skor Akhir Kamu',
+    'quiz_review_judul'         => 'Review Jawaban',
+    'quiz_motivasi_advance'     => 'Luar biasa! Kamu sangat menguasai materi ini. Terus pertahankan prestasimu! 🎉',
+    'quiz_motivasi_normal'      => 'Bagus! Nilaimu cukup baik. Ada beberapa hal yang bisa diperkuat lagi — review jawaban di bawah ya!',
+    'quiz_motivasi_remedial'    => 'Jangan menyerah! Setiap kesalahan adalah kesempatan belajar. Review pembahasan di bawah dan coba lagi. 💪',
+    'quiz_feedback_benar'       => 'Benar!',
+    'quiz_feedback_salah'       => 'Kurang tepat',
+    'quiz_jawaban_benar_label'  => 'Jawaban benar',
+    'quiz_kembali_dashboard'    => 'Kembali ke Dashboard',
+    'quiz_belum_ada_soal'       => 'Belum ada soal untuk mata pelajaran ini.',
+    'quiz_ai_dinilai'           => 'Jawaban essay akan dinilai otomatis oleh AI',
+    // REGISTER STAFF
+    
+    'register_staff_judul'      => 'Pendaftaran Staff',
+    'register_staff_desc'       => 'Masukkan kode undangan yang diberikan admin.',
+    'register_staff_tombol'     => 'Daftar sebagai Staff',
+    'invite_code_label'         => 'Kode Undangan',
+    'invite_code_hint'          => '(minta ke admin)',
+    'sudah_punya_akun'          => 'Sudah punya akun?',
+    'masuk_disini'              => 'Masuk di sini',
+    'daftar_sebagai_siswa'      => 'Daftar sebagai siswa?',
+    'klik_disini'               => 'Klik di sini',
+ 
+    
+    // DETAIL SISWA (STAFF VIEW)
+    
+    'detail_siswa_judul'        => 'Detail Siswa',
+    'nilai_per_mapel'           => 'Nilai per Mata Pelajaran',
+    'riwayat_kehadiran'         => 'Riwayat Kehadiran',
+    'riwayat_penilaian'         => 'Riwayat Penilaian Lengkap',
+    'belum_ada_nilai_mapel'     => 'Belum ada data nilai.',
+    'belum_ada_riwayat_hadir'   => 'Belum ada riwayat kehadiran.',
+    'perlu_perhatian_badge'     => 'Perlu Perhatian',
+    'status_normal_badge'       => 'Normal',
+    'min_label'                 => 'Min',
+    'max_label'                 => 'Max',
+    'penilaian_label'           => 'penilaian',
+ 
 
 ];

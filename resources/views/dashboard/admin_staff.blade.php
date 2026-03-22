@@ -82,6 +82,7 @@
             </div>
             <div class="space-y-6">
                 @forelse($siswa_beresiko as $risk)
+                @if(!$risk->user) @continue @endif
                 <div class="flex items-center justify-between group">
                     <div class="flex items-center space-x-4">
                         <div class="w-11 h-11 bg-gradient-to-tr from-gray-700 to-gray-600 rounded-2xl
@@ -89,8 +90,8 @@
                             {{ substr($risk->user->name, 0, 1) }}
                         </div>
                         <div>
-                            <p class="font-bold text-sm">{{ $risk->user->name }}</p>
-                            <p class="text-[10px] text-gray-400">Score: {{ $risk->last_score }} | Level: Rendah</p>
+                    <p class="font-bold text-sm">{{ $risk->user->name }}</p>
+                    <p class="text-[10px] text-gray-400">Score: {{ $risk->last_score }} | Level: Rendah</p>
                         </div>
                     </div>
                     <button class="text-red-400 hover:text-red-300 transition">

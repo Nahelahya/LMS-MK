@@ -93,6 +93,11 @@
               text-indigo-600 dark:text-indigo-400 text-xs font-bold py-2 rounded-xl transition">
         <i class="fas fa-question-circle mr-1"></i> Soal Quiz
     </a>
+    <a href="{{ route('quiz.rekap', $k) }}"
+   class="flex-1 text-center bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100
+          text-purple-600 dark:text-purple-400 text-xs font-bold py-2 rounded-xl transition">
+    <i class="fas fa-chart-bar mr-1"></i> Rekap Quiz
+    </a>
     <form action="{{ route('kelas.destroy', $k) }}" method="POST"
           onsubmit="return confirm('Hapus kelas {{ $k->nama_kelas }}?')">
         @csrf @method('DELETE')
