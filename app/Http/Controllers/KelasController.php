@@ -357,4 +357,79 @@ class KelasController extends Controller
         return response()->file($path, ['Content-Type' => $mime]);
     }
 
+
+    public function showDetail(\App\Models\User $siswa)
+    {
+        // Hanya staff/admin yang boleh akses
+        abort_unless(in_array(auth()->user()->role, ['staff', 'admin']), 403);
+ 
+        // Nilai per mata pelajaran
+        $nilais = \Illuminate\Support\Facades\DB::table('nilais')
+            ->where('user_id', $siswa->id)
+            ->select('mata_pelajaran', 'judul', 'tipe', 'nilai', 'keterangan', 'created_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
+ 
+        // Rata-rata per mata pelajaran
+        $avgPerMapel = \Illuminate\Support\Facades\DB::table('nilais')
+            ->where('user_id', $siswa->id)
+            ->select(
+                'mata_pelajaran',
+                \Illuminate\Support\Facades\DB::raw("ROUND(AVG(nilai)::numeric, 1) AS avg_nilai"),
+                \Illuminate\Support\Facades\DB::raw("COUNT(*) AS jumlah"),
+                \Illuminate\Support\Facades\DB::raw("MIN(nilai) AS terendah"),
+                \Illuminate\Support\Facades\DB::raw("MAX(nilai) AS tertinggi")
+            )
+            ->groupBy('mata_pelajaran')
+            ->orderBy('avg_nilai')
+            ->get();
+ 
+        // Kehadiran
+        $attendance = \Illuminate\Support\Facades\DB::table('attendances')
+            ->where('user_id', $siswa->id)
+            ->select(
+                \Illuminate\Support\Facades\DB::raw("COUNT(*) AS total"),
+                \Illuminate\Support\Facades\DB::raw("COUNT(CASE WHEN status = 'hadir' THEN 1 END) AS hadir"),
+                \Illuminate\Support\Facades\DB::raw("COUNT(CASE WHEN status = 'sakit' THEN 1 END) AS sakit"),
+                \Illuminate\Support\Facades\DB::raw("COUNT(CASE WHEN status = 'izin'  THEN 1 END) AS izin"),
+                \Illuminate\Support\Facades\DB::raw("COUNT(CASE WHEN status = 'alfa'  THEN 1 END) AS alfa")
+            )
+            ->first();
+ 
+        $pctHadir = ($attendance->total ?? 0) > 0
+            ? round($attendance->hadir / $attendance->total * 100, 1)
+            : 0;
+ 
+        // Kelas yang diikuti
+        $kelasDiikuti = \Illuminate\Support\Facades\DB::table('kelas_siswa as ks')
+            ->join('kelas as k', 'ks.kelas_id', '=', 'k.id')
+            ->where('ks.user_id', $siswa->id)
+            ->select('k.nama_kelas', 'k.mata_pelajaran')
+            ->get();
+ 
+        // Student progress (adaptif)
+        $progress = \Illuminate\Support\Facades\DB::table('student_progress')
+            ->where('user_id', $siswa->id)
+            ->select('status_adaptif', 'last_score', 'completion_percentage', 'is_at_risk')
+            ->get();
+ 
+        // Riwayat kehadiran terbaru
+        $riwayatHadir = \Illuminate\Support\Facades\DB::table('attendances')
+            ->where('user_id', $siswa->id)
+            ->orderBy('tanggal', 'desc')
+            ->limit(10)
+            ->get();
+ 
+        return view('kelas.siswa.detail', compact(
+            'siswa',
+            'nilais',
+            'avgPerMapel',
+            'attendance',
+            'pctHadir',
+            'kelasDiikuti',
+            'progress',
+            'riwayatHadir'
+        ));
+    }
+
 }

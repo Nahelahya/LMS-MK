@@ -193,17 +193,42 @@
     <div class="space-y-6">
 
         {{-- Quiz Adaptif --}}
-        <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg">
-            <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-4">
-                <i class="fas fa-bolt text-white"></i>
-            </div>
-            <h3 class="font-black text-lg mb-1">{{ __('messages.quiz_adaptif') }}</h3>
-            <p class="text-blue-100 text-xs mb-4">{{ __('messages.quiz_adaptif_desc') }}</p>
-            <a href="#"
-               class="block w-full bg-white text-blue-600 text-center text-sm font-black py-3 rounded-xl hover:bg-blue-50 transition">
+      <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg">
+    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+        <i class="fas fa-bolt text-white"></i>
+    </div>
+    <h3 class="font-black text-lg mb-1">{{ __('messages.quiz_adaptif') }}</h3>
+    <p class="text-blue-100 text-xs mb-4">{{ __('messages.quiz_adaptif_desc') }}</p>
+
+    @php $kelasSiswa = auth()->user()->kelas()->get(); @endphp
+
+    @if($kelasSiswa->isNotEmpty())
+        <form action="{{ route('quiz.start') }}" method="POST" class="space-y-3">
+            @csrf
+            <select name="kelas_id" id="quiz-kelas" onchange="updateMapel(this)"
+                class="w-full bg-white/20 border border-white/30 text-white text-sm font-bold rounded-xl px-3 py-2.5 focus:outline-none focus:border-white"
+                style="background-image:none;">
+                @foreach($kelasSiswa as $k)
+                <option value="{{ $k->id }}" data-mapel="{{ $k->mata_pelajaran }}" class="text-gray-800 bg-white">
+                    {{ $k->nama_kelas }} — {{ $k->mata_pelajaran }}
+                </option>
+                @endforeach
+            </select>
+            <input type="hidden" name="mata_pelajaran" id="quiz-mapel" value="{{ $kelasSiswa->first()->mata_pelajaran }}">
+            <button type="submit" class="block w-full bg-white text-blue-600 text-center text-sm font-black py-3 rounded-xl hover:bg-blue-50 transition">
                 {{ __('messages.mulai_sekarang') }}
-            </a>
-        </div>
+            </button>
+        </form>
+    @else
+        <p class="text-blue-200 text-xs text-center py-3">Belum terdaftar di kelas manapun</p>
+    @endif
+</div>
+
+<script>
+function updateMapel(select) {
+    document.getElementById('quiz-mapel').value = select.options[select.selectedIndex].dataset.mapel;
+}
+</script>
 
         {{-- Log Aktivitas --}}
         <div class="bg-white rounded-2xl p-6 shadow-sm">

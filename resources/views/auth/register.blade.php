@@ -88,6 +88,10 @@
         Already have an account? 
         <a href="{{ route('login') }}" class="font-bold text-blue-300 hover:text-blue-100 underline decoration-2 underline-offset-4 transition-all">Sign In</a>
     </div>
+    <div class="text-center mt-8 text-sm text-gray-200">
+        Are you staff?
+        <a href="{{ route('register.staff') }}" class="font-bold text-blue-300 hover:text-blue-100 underline decoration-2 underline-offset-4 transition-all">Register here</a>
+    </div>
 </div>
 
 <script>

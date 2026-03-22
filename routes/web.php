@@ -15,6 +15,7 @@ use App\Http\Controllers\{
     SettingsController,
     StudentController,
     ChatbotController,
+    QuizController,
 };
 use App\Http\Controllers\Auth\GithubController;
 
@@ -139,3 +140,21 @@ Route::middleware(['auth'])->prefix('settings')->name('settings.')->group(functi
 // Daftar staff
 Route::get('/register/staff',  [AuthController::class, 'showRegisterStaff'])->name('register.staff');
 Route::post('/register/staff', [AuthController::class, 'registerStaff'])->name('register.staff.post');
+
+Route::get('/siswa/{siswa}/detail', [KelasController::class, 'showDetail'])->name('siswa.show');
+
+
+
+Route::middleware(['auth'])->group(function () {
+
+    // ── Staff: manajemen soal ──────────────────────
+    Route::get('/kelas/{kelas}/soal',         [QuizController::class, 'soalIndex'])->name('quiz.soal.index');
+    Route::post('/kelas/{kelas}/soal',        [QuizController::class, 'soalStore'])->name('quiz.soal.store');
+    Route::delete('/kelas/{kelas}/soal/{id}', [QuizController::class, 'soalDestroy'])->name('quiz.soal.destroy');
+
+    // ── Student: quiz ──────────────────────────────
+    Route::post('/quiz/start',           [QuizController::class, 'start'])->name('quiz.start');
+    Route::get('/quiz/{session}/soal',   [QuizController::class, 'showSoal'])->name('quiz.soal');
+    Route::post('/quiz/{session}/jawab', [QuizController::class, 'submitJawaban'])->name('quiz.submit');
+    Route::get('/quiz/{session}/hasil',  [QuizController::class, 'hasil'])->name('quiz.hasil');
+});

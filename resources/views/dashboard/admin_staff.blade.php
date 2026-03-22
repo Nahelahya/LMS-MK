@@ -170,7 +170,7 @@
 
                     {{-- Aksi --}}
                     <td class="py-5 text-right pr-2">
-                        <button class="text-blue-600 dark:text-blue-400 hover:underline text-xs">Detail</button>
+                       <a href="{{ route('siswa.show', $murid->id) }}" class="text-blue-600 dark:text-blue-400 hover:underline text-xs">Detail</a>
                     </td>
                 </tr>
                 @endforeach

@@ -82,22 +82,26 @@
             <span><i class="fas fa-book mr-1"></i>{{ $k->courses->count() }} materi</span>
         </div>
 
-        <div class="flex gap-2">
-            <a href="{{ route('kelas.show', $k) }}"
-               class="flex-1 text-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50
-                      text-blue-600 dark:text-blue-400 text-xs font-bold py-2 rounded-xl transition">
-                Kelola
-            </a>
-            <form action="{{ route('kelas.destroy', $k) }}" method="POST"
-                  onsubmit="return confirm('Hapus kelas {{ $k->nama_kelas }}?')">
-                @csrf @method('DELETE')
-                <button class="bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50
-                               text-red-500 dark:text-red-400 text-xs font-bold px-3 py-2 rounded-xl transition">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </form>
-        </div>
-
+<div class="flex gap-2">
+    <a href="{{ route('kelas.show', $k) }}"
+       class="flex-1 text-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50
+              text-blue-600 dark:text-blue-400 text-xs font-bold py-2 rounded-xl transition">
+        Kelola
+    </a>
+    <a href="{{ route('quiz.soal.index', $k) }}"
+       class="flex-1 text-center bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50
+              text-indigo-600 dark:text-indigo-400 text-xs font-bold py-2 rounded-xl transition">
+        <i class="fas fa-question-circle mr-1"></i> Soal Quiz
+    </a>
+    <form action="{{ route('kelas.destroy', $k) }}" method="POST"
+          onsubmit="return confirm('Hapus kelas {{ $k->nama_kelas }}?')">
+        @csrf @method('DELETE')
+        <button class="bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50
+                       text-red-500 dark:text-red-400 text-xs font-bold px-3 py-2 rounded-xl transition">
+            <i class="fas fa-trash"></i>
+        </button>
+    </form>
+</div>
         {{-- ══════════════════════════════
              POPOVER EDIT KODE KELAS
         ══════════════════════════════ --}}
@@ -240,6 +244,7 @@ function kelasKode(el) {
         }
     };
 }
+
 </script>
 
 @endsection
