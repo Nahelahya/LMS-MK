@@ -161,3 +161,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/quiz/{session}/jawab', [QuizController::class, 'submitJawaban'])->name('quiz.submit');
     Route::get('/quiz/{session}/hasil',  [QuizController::class, 'hasil'])->name('quiz.hasil');
 });
+Route::get('/', function () {
+    return 'HIDUP BRO';
+});
