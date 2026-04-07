@@ -1,3 +1,3 @@
 <?php
 
-echo "PHP HIFUP";
+require __DIR__ . '/../public/index.php';
