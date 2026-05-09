@@ -43,3 +43,8 @@ LMS (Learning Management System) ini dibuat menggunakan framework Laravel dan di
 ```txt
 Email    : admin@gmail.com
 Password : admin
+````
+## 👨‍💼 Student Account
+```txt
+Email: studentbaru@lms.id
+Password: Student123!
