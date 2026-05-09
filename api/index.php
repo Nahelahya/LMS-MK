@@ -11,13 +11,27 @@ function vercel_env_default(string $key, string $value): void
     $_SERVER[$key] = $value;
 }
 
+function vercel_env_set(string $key, string $value): void
+{
+    putenv("{$key}={$value}");
+    $_ENV[$key] = $value;
+    $_SERVER[$key] = $value;
+}
+
+function vercel_env_forget(string $key): void
+{
+    putenv($key);
+    unset($_ENV[$key], $_SERVER[$key]);
+}
+
 vercel_env_default('APP_ENV', 'production');
 vercel_env_default('APP_DEBUG', 'false');
-vercel_env_default('APP_URL', 'https://'.($_SERVER['HTTP_HOST'] ?? 'tugas-elearning.vercel.app'));
+vercel_env_set('APP_URL', 'https://'.($_SERVER['HTTP_HOST'] ?? 'tugas-elearning.vercel.app'));
 vercel_env_default('LOG_CHANNEL', 'stderr');
 vercel_env_default('LOG_LEVEL', 'error');
 vercel_env_default('CACHE_STORE', 'array');
 vercel_env_default('SESSION_DRIVER', 'cookie');
+vercel_env_forget('SESSION_DOMAIN');
 vercel_env_default('SESSION_SECURE_COOKIE', 'true');
 vercel_env_default('QUEUE_CONNECTION', 'sync');
 vercel_env_default('MAIL_MAILER', 'log');
