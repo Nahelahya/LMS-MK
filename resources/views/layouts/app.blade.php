@@ -12,8 +12,8 @@
 </head>
 <body class="m-0 p-0 font-sans">
     
-    <div class="relative min-h-screen w-full flex flex-col bg-cover bg-center bg-no-repeat bg-fixed" 
-        style="background-image: url('{{ asset('images/bg-pkm.jpg') }}');">
+    <div class="relative min-h-screen w-full flex flex-col bg-cover bg-center bg-no-repeat bg-fixed"
+        style="background-image: linear-gradient(135deg, #0f172a 0%, #1d4ed8 48%, #0f766e 100%);">
         
         <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
 

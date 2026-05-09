@@ -20,7 +20,11 @@ use App\Http\Controllers\{
 use App\Http\Controllers\Auth\GithubController;
 
 // ── WELCOME ─────────────────────────────
-Route::get('/', fn() => view('welcome'));
+Route::get('/', function () {
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : view('auth.login');
+});
 
 // ── GUEST ───────────────────────────────
 Route::middleware('guest')->group(function () {
@@ -160,7 +164,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/quiz/{session}/soal',   [QuizController::class, 'showSoal'])->name('quiz.soal');
     Route::post('/quiz/{session}/jawab', [QuizController::class, 'submitJawaban'])->name('quiz.submit');
     Route::get('/quiz/{session}/hasil',  [QuizController::class, 'hasil'])->name('quiz.hasil');
-});
-Route::get('/', function () {
-    return 'HIDUP BRO';
 });

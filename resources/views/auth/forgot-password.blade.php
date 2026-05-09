@@ -9,8 +9,8 @@
 </head>
 <body class="bg-gray-100">
 
-<div class="min-h-screen w-full flex items-center justify-center bg-no-repeat bg-cover bg-center bg-fixed" 
-     style="background-image: url('{{ asset('images/bg-pkm.jpg') }}');">
+<div class="min-h-screen w-full flex items-center justify-center bg-no-repeat bg-cover bg-center bg-fixed"
+     style="background-image: linear-gradient(135deg, #0f172a 0%, #1d4ed8 48%, #0f766e 100%);">
     
     <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
 
