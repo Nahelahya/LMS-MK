@@ -22,8 +22,14 @@ vercel_env_default('SESSION_SECURE_COOKIE', 'true');
 vercel_env_default('QUEUE_CONNECTION', 'sync');
 vercel_env_default('MAIL_MAILER', 'log');
 vercel_env_default('LARAVEL_STORAGE_PATH', '/tmp/storage');
+vercel_env_default('APP_SERVICES_CACHE', '/tmp/cache/services.php');
+vercel_env_default('APP_PACKAGES_CACHE', '/tmp/cache/packages.php');
+vercel_env_default('APP_CONFIG_CACHE', '/tmp/cache/config.php');
+vercel_env_default('APP_ROUTES_CACHE', '/tmp/cache/routes.php');
+vercel_env_default('APP_EVENTS_CACHE', '/tmp/cache/events.php');
 
 foreach ([
+    '/tmp/cache',
     '/tmp/storage/framework/cache/data',
     '/tmp/storage/framework/sessions',
     '/tmp/storage/framework/views',
