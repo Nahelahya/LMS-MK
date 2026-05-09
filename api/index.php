@@ -34,4 +34,18 @@ foreach ([
     }
 }
 
-require __DIR__.'/../public/index.php';
+try {
+    require __DIR__.'/../public/index.php';
+} catch (Throwable $exception) {
+    if (filter_var(getenv('APP_DEBUG'), FILTER_VALIDATE_BOOLEAN)) {
+        http_response_code(500);
+        header('Content-Type: text/plain; charset=utf-8');
+
+        echo $exception::class.PHP_EOL;
+        echo $exception->getMessage().PHP_EOL.PHP_EOL;
+        echo $exception->getTraceAsString();
+        exit;
+    }
+
+    throw $exception;
+}
