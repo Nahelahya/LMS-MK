@@ -73,3 +73,23 @@ Route::get('/debug/user-count', function () {
     }
 });
 
+Route::get('/debug/logs', function () {
+    $logFile = storage_path('logs/laravel.log');
+    
+    if (!file_exists($logFile)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Log file not found'
+        ]);
+    }
+    
+    $lines = file($logFile);
+    $lastLines = array_slice($lines, -50); // Get last 50 lines
+    
+    return response()->json([
+        'success' => true,
+        'total_lines' => count($lines),
+        'last_50_lines' => implode('', $lastLines)
+    ]);
+});
+
