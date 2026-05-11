@@ -214,6 +214,31 @@ Route::get('/__debug/users', function () {
     }
 });
 
+Route::get('/__debug/view-students', function () {
+    try {
+        $path = resource_path('views/admin/students/index.blade.php');
+        $exists = file_exists($path);
+        
+        $students = \App\Models\User::where('role', 'student')->paginate(10);
+        $view = view('admin.students.index', compact('students'))->render();
+
+        return response()->json([
+            'success' => true,
+            'view_path' => $path,
+            'view_exists' => $exists,
+            'render_length' => strlen($view),
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => explode("\n", $e->getTraceAsString(), 20),
+        ], 500);
+    }
+});
+
 Route::get('/__debug/logs', function () {
     $logFile = storage_path('logs/laravel.log');
     if (! file_exists($logFile)) {
