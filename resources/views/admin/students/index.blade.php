@@ -209,7 +209,7 @@
                             'total' => $students->total(),
                         ]) }}
                     </p>
-                    {{ $students->links('vendor.pagination.tailwind') }}
+                    {{ $students->links('pagination.tailwind') }}
                 </div>
             @endif
         @endif
