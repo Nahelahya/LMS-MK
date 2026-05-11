@@ -36,6 +36,8 @@ LMS (Learning Management System) ini dibuat menggunakan framework Laravel dan di
 
 ---
 
+https://tugas-elearning.vercel.app/
+
 # 🔑 Demo Login
 
 ## 👨‍💼 Admin Account
