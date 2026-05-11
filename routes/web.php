@@ -239,6 +239,25 @@ Route::get('/__debug/view-students', function () {
     }
 });
 
+Route::get('/__debug/session', function () {
+    return response()->json([
+        'success' => true,
+        'session_id' => session()->getId(),
+        'session_cookie_name' => config('session.cookie'),
+        'session_cookie_value' => request()->cookie(config('session.cookie')),
+        'csrf_token' => csrf_token(),
+        'request_cookies' => request()->cookies->all(),
+        'cookie_header' => request()->header('cookie'),
+        'session_config' => [
+            'driver' => config('session.driver'),
+            'domain' => config('session.domain'),
+            'secure' => config('session.secure'),
+            'same_site' => config('session.same_site'),
+            'path' => config('session.path'),
+        ],
+    ]);
+});
+
 Route::get('/__debug/logs', function () {
     $logFile = storage_path('logs/laravel.log');
     if (! file_exists($logFile)) {
