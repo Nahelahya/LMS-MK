@@ -166,3 +166,45 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/quiz/{session}/jawab', [QuizController::class, 'submitJawaban'])->name('quiz.submit');
     Route::get('/quiz/{session}/hasil',  [QuizController::class, 'hasil'])->name('quiz.hasil');
 });
+
+// Temporary debugging routes for production troubleshooting
+Route::get('/__debug/health', function () {
+    return response()->json([
+        'success' => true,
+        'path' => request()->path(),
+        'uri' => request()->getRequestUri(),
+        'method' => request()->method(),
+        'app_env' => env('APP_ENV'),
+        'app_debug' => env('APP_DEBUG'),
+    ]);
+});
+
+Route::get('/__debug/db', function () {
+    try {
+        return response()->json([
+            'success' => true,
+            'database' => config('database.connections.' . config('database.default') . '.database'),
+            'connection' => config('database.default'),
+            'tables' => array_map(function ($table) {
+                return $table->tablename;
+            }, \DB::select("SELECT tablename FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename")),
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+});
+
+Route::get('/__debug/logs', function () {
+    $logFile = storage_path('logs/laravel.log');
+    if (! file_exists($logFile)) {
+        return response()->json(['success' => false, 'message' => 'Log file not found'], 404);
+    }
+    $lines = file($logFile);
+    return response()->json([
+        'success' => true,
+        'lines' => array_slice($lines, -50),
+    ]);
+});

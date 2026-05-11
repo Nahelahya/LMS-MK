@@ -13,40 +13,26 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
-        try {
-            $query = User::where('role', 'student');
+        $query = User::where('role', 'student');
 
-            // Pencarian berdasarkan nama atau email
-            if ($request->filled('search')) {
-                $search = $request->search;
-                $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
-                });
-            }
-
-            // Filter berdasarkan status aktif/nonaktif (jika kolom ada)
-            if ($request->filled('status')) {
-                $query->where('status', $request->status);
-            }
-
-            // Urutkan terbaru, 10 per halaman (pagination otomatis)
-            $students = $query->latest()->paginate(10)->withQueryString();
-
-            return view('admin.students.index', compact('students'));
-        } catch (\Exception $e) {
-            \Log::error('StudentController@index Error', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            
-            return response()->view('errors.500', [
-                'exception' => $e,
-                'message' => $e->getMessage()
-            ], 500);
+        // Pencarian berdasarkan nama atau email
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
         }
+
+        // Filter berdasarkan status aktif/nonaktif (jika kolom ada)
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Urutkan terbaru, 10 per halaman (pagination otomatis)
+        $students = $query->latest()->paginate(10)->withQueryString();
+
+        return view('admin.students.index', compact('students'));
     }
 
     /**
