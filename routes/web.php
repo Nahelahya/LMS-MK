@@ -197,6 +197,23 @@ Route::get('/__debug/db', function () {
     }
 });
 
+Route::get('/__debug/users', function () {
+    try {
+        $students = \App\Models\User::where('role', 'student')->limit(5)->get(['id', 'name', 'email', 'role', 'created_at']);
+
+        return response()->json([
+            'success' => true,
+            'student_count' => \App\Models\User::where('role', 'student')->count(),
+            'students' => $students,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+});
+
 Route::get('/__debug/logs', function () {
     $logFile = storage_path('logs/laravel.log');
     if (! file_exists($logFile)) {
