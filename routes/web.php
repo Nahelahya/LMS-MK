@@ -39,13 +39,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/verify-otp', [VerificationController::class, 'index'])->name('otp.index');
     Route::post('/verify-otp', [VerificationController::class, 'verify'])->name('otp.verify');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-     Route::get('/users', [StudentController::class, 'index'])->name('students.index');
+    Route::post('/chatbot/chat', [ChatbotController::class, 'chat'])->name('chatbot.chat');
+});
+
+// ── ADMIN - STUDENT MANAGEMENT ──────────
+Route::middleware(['auth', 'role:admin,staff'])->group(function () {
+    Route::get('/users', [StudentController::class, 'index'])->name('students.index');
     Route::get('/users/{user}', [StudentController::class, 'show'])->name('students.show');
     Route::delete('/users/{user}', [StudentController::class, 'destroy'])->name('students.destroy');
-    Route::middleware(['auth'])->group(function () {
-    Route::post('/chatbot/chat', [ChatbotController::class, 'chat'])
-         ->name('chatbot.chat');
-});
 });
 
 // ── MAIN APP (AUTH + VERIFIED) ──────────
