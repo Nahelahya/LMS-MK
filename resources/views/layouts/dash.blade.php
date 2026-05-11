@@ -138,6 +138,8 @@
 
 <body class="bg-[#F4F7FE] dark:bg-[#0d0f14] font-sans">
 
+@php $currentUser = auth()->user(); @endphp
+
 <div class="flex min-h-screen overflow-hidden" x-data="{ sidebarOpen: false }">
 
     {{-- ══════════════════════════════
@@ -180,7 +182,7 @@
                 <span class="font-semibold text-sm">{{ __('messages.materi') }}</span>
             </a>
 
-            @if(auth()->user()->role === 'staff' || auth()->user()->role === 'admin')
+            @if($currentUser && ($currentUser->role === 'staff' || $currentUser->role === 'admin'))
             <a href="{{ route('kelas.index') }}"
                class="flex items-center space-x-4 p-4 rounded-2xl transition
                     {{ request()->is('kelas*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
@@ -197,7 +199,7 @@
 </a>
 
 
-            @if(auth()->user()->role === 'student')
+            @if($currentUser && $currentUser->role === 'student')
             <a href="{{ route('kelas.join') }}"
                class="flex items-center space-x-4 p-4 rounded-2xl transition
                       {{ request()->is('join-kelas*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
@@ -207,7 +209,7 @@
             @endif
 
             {{-- Presensi: Student --}}
-            @if(auth()->user()->role === 'student')
+            @if($currentUser && $currentUser->role === 'student')
             <a href="{{ route('presensi.index') }}"
                class="flex items-center space-x-4 p-4 rounded-2xl transition
                       {{ request()->is('presensi*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
@@ -217,7 +219,7 @@
             @endif
 
             {{-- Presensi: Admin & Staff --}}
-            @if(auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
+            @if($currentUser && ($currentUser->role === 'admin' || $currentUser->role === 'staff'))
             <a href="{{ route('admin.presensi') }}"
                class="flex items-center space-x-4 p-4 rounded-2xl transition
                       {{ request()->is('admin/presensi*') ? 'bg-blue-600 shadow-lg' : 'hover:bg-gray-800 dark:hover:bg-[#1a1d28]' }}">
@@ -226,7 +228,7 @@
             </a>
             @endif
 
-            @if(auth()->user()->role === 'admin' || auth()->user()->role === 'staff')
+            @if($currentUser && ($currentUser->role === 'admin' || $currentUser->role === 'staff'))
             <div class="pt-4">
                 <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest px-4 mb-2">{{ __('messages.manajemen') }}</p>
                 <a href="/users"
@@ -270,15 +272,15 @@
             {{-- User info --}}
             <div class="flex items-center space-x-3 mb-4">
                 <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">
-                    <img src="{{ auth()->user()->photo ? asset('storage/profile/' . auth()->user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}" 
+                    <img src="{{ optional($currentUser)->photo ? asset('storage/profile/' . $currentUser->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(optional($currentUser)->name ?? 'Guest') }}" 
      class="w-full h-full rounded-xl object-cover shadow-lg border border-white/20">
                 </div>
                 <div>
-                    <p class="text-sm font-bold text-white truncate max-w-[160px]">{{ auth()->user()->name }}</p>
+                    <p class="text-sm font-bold text-white truncate max-w-[160px]">{{ optional($currentUser)->name ?? 'Guest' }}</p>
                     <span class="text-[10px] font-black uppercase tracking-tighter
-                        {{ auth()->user()->role === 'admin' ? 'text-red-400' :
-                           (auth()->user()->role === 'staff' ? 'text-yellow-400' : 'text-blue-400') }}">
-                        {{ auth()->user()->role }}
+                        {{ optional($currentUser)->role === 'admin' ? 'text-red-400' :
+                           (optional($currentUser)->role === 'staff' ? 'text-yellow-400' : 'text-blue-400') }}">
+                        {{ optional($currentUser)->role ?? 'guest' }}
                     </span>
                 </div>
             </div>
@@ -322,16 +324,16 @@
             <div class="flex items-center space-x-3 lg:space-x-6">
                 <div class="text-right hidden sm:block">
                     <p class="text-xs lg:text-sm font-bold text-[#1B254B] dark:text-gray-200">
-                        {{ auth()->user()->name }}
+                        {{ optional($currentUser)->name ?? 'Guest' }}
                     </p>
                     <p class="text-[10px] text-gray-400 uppercase font-black tracking-tighter">
-                        {{ auth()->user()->role }}
+                        {{ optional($currentUser)->role ?? 'guest' }}
                     </p>
                 </div>
                 <div class="w-10 h-10 lg:w-12 lg:h-12 bg-blue-600 rounded-xl lg:rounded-2xl
                             shadow-lg border-2 border-white dark:border-[#1e2130]
                             flex items-center justify-center text-white font-bold">
-                    <img src="{{ auth()->user()->photo ? asset('storage/profile/' . auth()->user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}" 
+                    <img src="{{ optional($currentUser)->photo ? asset('storage/profile/' . $currentUser->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(optional($currentUser)->name ?? 'Guest') }}" 
      class="w-full h-full rounded-xl object-cover shadow-lg border border-white/20">
                 </div>
             </div>
